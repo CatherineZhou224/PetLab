@@ -4,18 +4,22 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
   VideoCameraOutlined,
-  AndroidOutlined,
-  AppleOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, Tabs, theme } from "antd";
 import Title from "antd/es/typography/Title";
 import "./App.css";
+import { DogInfo } from "./Components/DogInfo";
+import { CatInfo } from "./Components/CatInfo";
+import DogIcon from "./Components/DogIcon";
+import CatIcon from "./Components/CatIcon";
 const { Header, Sider } = Layout;
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const { TabPane } = Tabs;
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -28,7 +32,7 @@ const App = () => {
           items={[
             {
               key: "1",
-              icon: <UserOutlined />,
+              icon: <DogIcon fill="white" />,
               label: "Dog Collection",
               children: [
                 {
@@ -39,7 +43,7 @@ const App = () => {
             },
             {
               key: "2",
-              icon: <VideoCameraOutlined />,
+              icon: <CatIcon fill="white" />,
               label: "Cat Collection",
               children: [
                 {
@@ -76,18 +80,30 @@ const App = () => {
             Pet Lab
           </Title>
         </Header>
-        <Tabs
-          defaultActiveKey="2"
-          items={[AppleOutlined, AndroidOutlined].map((Icon, i) => {
-            const pet = ["Dog", "Cat"];
-            return {
-              key: i,
-              label: `${pet[i]}`,
-              children: `${pet[i]}`,
-              icon: <Icon />,
-            };
-          })}
-        />
+        <Tabs defaultActiveKey="1" destroyInactiveTabPane="true">
+          <TabPane
+            tab={
+              <>
+                <DogIcon style={{ marginRight: "0.5rem" }} />
+                Dogs
+              </>
+            }
+            key="1"
+          >
+            <DogInfo />
+          </TabPane>
+          <TabPane
+            tab={
+              <>
+                <CatIcon style={{ marginRight: "0.5rem" }} />
+                Cats
+              </>
+            }
+            key="2"
+          >
+            <CatInfo />
+          </TabPane>
+        </Tabs>
       </Layout>
     </Layout>
   );
