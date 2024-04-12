@@ -33,7 +33,7 @@ export function CatInfo() {
   }, []);
 
   return (
-    <div className="cat-container">
+    <div className="container">
       <List
         size="small"
         bordered
@@ -46,7 +46,7 @@ export function CatInfo() {
         {catName && <p>Name: {catName}</p>}
         {catOrigin && <p>Origin: {catOrigin}</p>}
         {catLength && <p>Length: {catLength}</p>}
-        {catImage && <img className="cat-image" src={catImage} />}
+        {catImage && <img className="image" src={catImage} />}
       </div>
     </div>
   );

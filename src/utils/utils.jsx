@@ -10,7 +10,7 @@ export const getDogBreeds = async () => {
 
 export const getDogInfo = async (dogBreed) => {
   const url = new URL(`${origin}/v1/dogs`);
-  url.searchParams.append("name", { dogBreed });
+  url.searchParams.append("name", dogBreed);
 
   const response = await fetch(url, {
     headers: {

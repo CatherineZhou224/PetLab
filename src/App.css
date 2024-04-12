@@ -18,11 +18,11 @@
   overflow: scroll;
 }
 
-.cat-container {
+.container {
   display: flex;
 }
 
-.cat-image {
+.image {
   height: 30em;
   width: 30em;
   object-fit: cover;
