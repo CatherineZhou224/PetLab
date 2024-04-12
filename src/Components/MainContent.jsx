@@ -29,6 +29,9 @@ const MainContent = () => {
 
   // Handlers for adding to collections
   const addToDogCollection = (dog) => {
+    if (dogCollection.some((d) => d.label === dog.label)) {
+      return alert("This dog is already in the collection.");
+    }
     setDogCollection((prev) => [...prev, dog]);
   };
 
@@ -42,6 +45,10 @@ const MainContent = () => {
 
   const removeCatCollection = (catName) => {
     setCatCollection((prev) => prev.filter((cat) => cat.label !== catName));
+  };
+
+  const removeDogCollection = (dogName) => {
+    setDogCollection((prev) => prev.filter((dog) => dog.label !== dogName));
   };
 
   const [selectedCat, setSelectedCat] = useState(null);
@@ -120,7 +127,7 @@ const MainContent = () => {
             <DogInfo 
               activeTab={activeTab}
               addToDogCollection={addToDogCollection}
-              removeCatCollection={removeCatCollection}
+              removeDogCollection={removeDogCollection}
               // handleSelectCat={handleSelectCat}
 
             />

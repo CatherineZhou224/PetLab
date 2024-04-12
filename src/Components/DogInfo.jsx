@@ -4,7 +4,7 @@ import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 
 export function DogInfo(
-  { addToDogCollection, removeCatCollection, handleSelectCat }
+  { addToDogCollection, removeDogCollection, handleSelectCat }
 ) {
   const [breeds, setBreeds] = useState([]);
   // const [searchResults, setSearchResults] = useState([]);
@@ -49,7 +49,7 @@ export function DogInfo(
 
   const handleRemoveClick = (e, dogName) => {
     e.stopPropagation(); // Prevents List.Item onClick from being triggered
-    removeCatCollection(dogName);
+    removeDogCollection(dogName);
   };
 
   return (
