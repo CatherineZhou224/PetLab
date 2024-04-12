@@ -6,7 +6,11 @@ import { List } from "antd";
 
 import { Button } from "react-bootstrap";
 
-export function CatInfo({ addToCatCollection, removeCatCollection, handleSelectCat}) {
+export function CatInfo({
+  addToCatCollection,
+  removeCatCollection,
+  handleSelectCat,
+}) {
   const [catImage, setCatImage] = useState("");
   const [catName, setCatName] = useState("");
   const [catLength, setCatLength] = useState("");
@@ -40,8 +44,6 @@ export function CatInfo({ addToCatCollection, removeCatCollection, handleSelectC
     removeCatCollection(catName);
   };
 
-
-
   return (
     <div className="container">
       <List
@@ -54,33 +56,40 @@ export function CatInfo({ addToCatCollection, removeCatCollection, handleSelectC
         style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
       />
       <div>
-        {catName && <p>Name: {catName}</p>}
-        {catOrigin && <p>Origin: {catOrigin}</p>}
-        {catLength && <p>Length: {catLength}</p>}
-        {catImage && <img className="image" src={catImage} />}
-      </div>
+        <div>
+          {catName && <p>Name: {catName}</p>}
+          {catOrigin && <p>Origin: {catOrigin}</p>}
+          {catLength && <p>Length: {catLength}</p>}
+          {catImage && <img className="image" src={catImage} />}
+        </div>
 
-      <Button 
-        variant="primary"
-        onClick={() => addToCatCollection(
-          { key: catName, 
-            icon: <span
-                    onClick={() => handleSelectCat(cat)}
+        <Button
+          variant="primary"
+          onClick={() =>
+            addToCatCollection({
+              key: catName,
+              icon: (
+                <span onClick={() => handleSelectCat(cat)}>
+                  <span
+                    className="remove-button"
+                    onClick={(e) => handleRemoveClick(e, catName)}
                   >
-                    <span 
-                      className="remove-button"
-                      onClick={(e) => handleRemoveClick(e, catName)}
-                    >
-                      ❌
-                    </span>
-                    <img src={catImage} alt={catName} style={{ width: '30px', height: '30px' }} />
-                  </span>,
-            label: catName,
-
-          })}
-      >
-        Add to collection
-      </Button>
+                    ❌
+                  </span>
+                  <img
+                    src={catImage}
+                    alt={catName}
+                    style={{ width: "30px", height: "30px" }}
+                  />
+                </span>
+              ),
+              label: catName,
+            })
+          }
+        >
+          Add to collection
+        </Button>
+      </div>
     </div>
   );
 }
