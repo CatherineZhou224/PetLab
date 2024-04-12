@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 .ant-tabs-content-holder {
   background-color: white;
   margin: 0px 16px;
@@ -13,7 +15,21 @@
   margin: 0px 16px;
 }
 
-.container {
+.ant-spin-container {
+  height: 100vh;
+  overflow: scroll;
+}
+
+.ant-list-item{
+  cursor: pointer;
+}
+
+.ant-list-item:hover{
+  background-color: #58554F;
+  color:white;
+}
+
+.cat-container {
   display: flex;
 }
 
@@ -21,4 +37,134 @@
   height: 30em;
   width: 30em;
   object-fit: cover;
+}
+
+/* loading page css */
+.custom-body{
+  background: url('./src/assets/view-adorable-3d-cat.png') ;
+  background-color: lightgray; 
+  background-position: center; 
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  margin: 0;
+  padding: 0; 
+  font-family: 'Poppins', sans-serif;
+}
+
+
+
+.custom-progress div{
+  justify-content: flex-end;
+  flex-direction: row;
+  overflow: visible;
+  border-radius: var(--bs-progress-border-radius);
+  background-color: #E59675;
+}
+
+.custom-progress{
+  overflow: visible;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+
+
+.custom-progress div::after {
+  content: '';
+  display: block;
+  background: url('./src/assets/navigation-icon.png') no-repeat center center;
+  background-size: contain; /* This will make sure your image is scaled to fit within the element */
+  margin-right: -35px;
+  margin-top: -25px;
+  min-width: 70px;
+  min-height: 70px;
+  transform: rotate(29.049deg);
+}
+
+#root .progress{
+  overflow: visible;
+}
+
+.loading-text{
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #FFF6E5;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.loading-num{
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #FFF6E5;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Poppins", sans-serif;
+  font-size: 70px;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.pet-lab-title{
+  color: #FFF;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 100px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  position: absolute;
+  top:5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pet-lab-subtitle{
+  color: #58554F;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  position: absolute;
+  width: 100%;
+  top: 23%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.loading-content {
+  transition: opacity 1s ease-in-out;
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+/* pet collection */
+/* #root .ant-menu-item-selected::after {
+  content: "❌";
+} */
+
+/* #root .ant-menu-item{
+  justify-content: space-around;
+} */
+
+#root .ant-menu ul{
+  width: 100%;
+  justify-content: space-around;
+}
+
+#root .ant-menu > li > span.ant-menu-item-icon{
+  width: 40%;
+  justify-content: space-around;
+}
+
+.ant-menu-item {
+  padding-left: 20px !important;
 }

@@ -3,7 +3,10 @@ import catBreeds from "../utils/catBreeds";
 import { getCatInfo } from "../utils/utils";
 import { useEffect, useState } from "react";
 import { List } from "antd";
-export function CatInfo() {
+
+import { Button } from "react-bootstrap";
+
+export function CatInfo({ addToCatCollection, removeCatCollection, handleSelectCat}) {
   const [catImage, setCatImage] = useState("");
   const [catName, setCatName] = useState("");
   const [catLength, setCatLength] = useState("");
@@ -32,6 +35,13 @@ export function CatInfo() {
     handleClick("Abyssinia");
   }, []);
 
+  const handleRemoveClick = (e, catName) => {
+    e.stopPropagation(); // Prevents List.Item onClick from being triggered
+    removeCatCollection(catName);
+  };
+
+
+
   return (
     <div className="container">
       <List
@@ -49,6 +59,28 @@ export function CatInfo() {
         {catLength && <p>Length: {catLength}</p>}
         {catImage && <img className="image" src={catImage} />}
       </div>
+
+      <Button 
+        variant="primary"
+        onClick={() => addToCatCollection(
+          { key: catName, 
+            icon: <span
+                    onClick={() => handleSelectCat(cat)}
+                  >
+                    <span 
+                      className="remove-button"
+                      onClick={(e) => handleRemoveClick(e, catName)}
+                    >
+                      ❌
+                    </span>
+                    <img src={catImage} alt={catName} style={{ width: '30px', height: '30px' }} />
+                  </span>,
+            label: catName,
+
+          })}
+      >
+        Add to collection
+      </Button>
     </div>
   );
 }
