@@ -41,6 +41,7 @@ export function CatInfo() {
         renderItem={(item) => (
           <List.Item onClick={() => handleClick(item)}>{item}</List.Item>
         )}
+        style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
       />
       <div>
         {catName && <p>Name: {catName}</p>}

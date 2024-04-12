@@ -13,11 +13,6 @@
   margin: 0px 16px;
 }
 
-.ant-spin-container {
-  height: 100vh;
-  overflow: scroll;
-}
-
 .container {
   display: flex;
 }

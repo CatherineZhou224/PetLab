@@ -8,6 +8,7 @@ export function DogInfo() {
   // const [selectedBreed, setSelectedBreed] = useState(null);
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchBreeds = async () => {
@@ -17,6 +18,7 @@ export function DogInfo() {
       // setSearchResults(breedNames);
     };
     fetchBreeds();
+    handleSelect("affenpinscher");
   }, []);
 
   // const handleSearch = (value) => {
@@ -27,13 +29,15 @@ export function DogInfo() {
   const handleSelect = async (breed) => {
     try {
       const data = await getDogInfo(breed);
-      console.log(data[0]);
       if (data.length > 0) {
         const dog = data[0];
         setDogName(dog.name);
         setDogImage(dog.image_link);
+        setMessage();
       } else {
-        console.log("No data found for the specified dog.");
+        setDogName();
+        setDogImage();
+        setMessage("No data found for the specified dog.");
       }
     } catch (error) {
       console.error("Error fetching dog information:", error);
@@ -53,14 +57,18 @@ export function DogInfo() {
       </AutoComplete> */}
       <div className="container">
         <List
+          size="small"
           bordered
           dataSource={breeds}
           renderItem={(breed) => (
-            <List.Item onClick={() => handleSelect(breed)}>{breed}</List.Item>
+            <List.Item onClick={() => handleSelect(breed)}>
+              {breed.charAt(0).toUpperCase() + breed.slice(1)}
+            </List.Item>
           )}
           style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
         />
         <div>
+          {message && <p>{message}</p>}
           {dogName && <p>Name: {dogName}</p>}
           {dogImage && <img className="image" src={dogImage} />}
         </div>
