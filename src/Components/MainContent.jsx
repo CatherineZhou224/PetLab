@@ -67,12 +67,7 @@ const MainContent = () => {
               key: "1",
               icon: <DogIcon fill="white" />,
               label: "Dog Collection",
-              children: [
-                {
-                  key: "1-1",
-                  label: "image1",
-                },
-              ],
+              children: dogCollection,
             },
             {
               key: "2",
@@ -122,7 +117,13 @@ const MainContent = () => {
             }
             key="1"
           >
-            <DogInfo activeTab={activeTab} />
+            <DogInfo 
+              activeTab={activeTab}
+              addToDogCollection={addToDogCollection}
+              removeCatCollection={removeCatCollection}
+              // handleSelectCat={handleSelectCat}
+
+            />
           </TabPane>
           <TabPane
             tab={

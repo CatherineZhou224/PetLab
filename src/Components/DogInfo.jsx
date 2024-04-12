@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { AutoComplete, Input, List, Typography, Card } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
+import { Button } from "react-bootstrap";
 
-export function DogInfo() {
+export function DogInfo(
+  { addToDogCollection, removeCatCollection, handleSelectCat }
+) {
   const [breeds, setBreeds] = useState([]);
   // const [searchResults, setSearchResults] = useState([]);
   // const [selectedBreed, setSelectedBreed] = useState(null);
@@ -44,6 +47,11 @@ export function DogInfo() {
     }
   };
 
+  const handleRemoveClick = (e, dogName) => {
+    e.stopPropagation(); // Prevents List.Item onClick from being triggered
+    removeCatCollection(dogName);
+  };
+
   return (
     <>
       {/* <AutoComplete
@@ -72,6 +80,36 @@ export function DogInfo() {
           {dogName && <p>Name: {dogName}</p>}
           {dogImage && <img className="image" src={dogImage} />}
         </div>
+
+        <Button
+          variant="primary"
+          onClick={() =>
+            addToDogCollection({
+              key: dogName,
+              icon: (
+                <span 
+                  // onClick={() => handleSelecCat(cat)}
+                >
+                  <span
+                    className="remove-button"
+                    onClick={(e) => handleRemoveClick(e, dogName)}
+                  >
+                    ❌
+                  </span>
+                  <img
+                    src={dogImage}
+                    alt={dogName}
+                    style={{ width: "30px", height: "30px" }}
+                  />
+                </span>
+              ),
+              label: dogName,
+            })
+          }
+        >
+          Add to collection
+        </Button>
+
       </div>
     </>
   );
