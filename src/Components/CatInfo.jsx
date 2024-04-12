@@ -27,6 +27,11 @@ export function CatInfo() {
       // Handle errors, such as network errors or server errors
     }
   };
+
+  useEffect(() => {
+    handleClick("Abyssinia");
+  }, []);
+
   return (
     <div className="cat-container">
       <List
