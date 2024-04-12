@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button, Tabs, theme } from "antd";
 import Title from "antd/es/typography/Title";
 import "./App.css";
@@ -15,11 +10,16 @@ import CatIcon from "./Components/CatIcon";
 const { Header, Sider } = Layout;
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [activeTab, setActiveTab] = useState("1");
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
   const { TabPane } = Tabs;
+
+  const handleTabChange = () => {
+    setActiveTab((prev) => (prev === "1" ? "2" : "1"));
+  };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -80,7 +80,11 @@ const App = () => {
             Pet Lab
           </Title>
         </Header>
-        <Tabs defaultActiveKey="1" destroyInactiveTabPane="true">
+        <Tabs
+          destroyInactiveTabPane="true"
+          activeKey={activeTab}
+          onChange={handleTabChange}
+        >
           <TabPane
             tab={
               <>
@@ -90,7 +94,7 @@ const App = () => {
             }
             key="1"
           >
-            <DogInfo />
+            <DogInfo activeTab={activeTab} />
           </TabPane>
           <TabPane
             tab={
@@ -101,7 +105,7 @@ const App = () => {
             }
             key="2"
           >
-            <CatInfo />
+            <CatInfo activeTab={activeTab} />
           </TabPane>
         </Tabs>
       </Layout>

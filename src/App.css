@@ -12,3 +12,18 @@
 .ant-tabs-nav-wrap {
   margin: 0px 16px;
 }
+
+.ant-spin-container {
+  height: 100vh;
+  overflow: scroll;
+}
+
+.cat-container {
+  display: flex;
+}
+
+.cat-image {
+  height: 30em;
+  width: 30em;
+  object-fit: cover;
+}

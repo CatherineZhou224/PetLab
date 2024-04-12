@@ -1,4 +1,4 @@
-export const catBreeds = [
+const catBreeds = [
   "Abyssinian",
   "Aegean",
   "American Curl",
@@ -97,3 +97,5 @@ export const catBreeds = [
   "Turkish Van",
   "Ukrainian Levkoy",
 ];
+
+export default catBreeds;

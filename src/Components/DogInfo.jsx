@@ -1,3 +1,3 @@
-export function DogInfo() {
+export function DogInfo({ activeTab }) {
   return <>Dogs</>;
 }

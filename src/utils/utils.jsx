@@ -9,7 +9,7 @@ export const getDogBreeds = async () => {
 };
 
 export const getDogInfo = async (dogBreed) => {
-  const url = new URL(`${origin / v1 / dogs}`);
+  const url = new URL(`${origin}/v1/dogs`);
   url.searchParams.append("name", { dogBreed });
 
   const response = await fetch(url, {
@@ -21,8 +21,8 @@ export const getDogInfo = async (dogBreed) => {
 };
 
 export const getCatInfo = async (catBreed) => {
-  const url = new URL(`${origin / v1 / cats}`);
-  url.searchParams.append("name", { catBreed });
+  const url = new URL(`${origin}/v1/cats`);
+  url.searchParams.append("name", catBreed);
 
   const response = await fetch(url, {
     headers: {
