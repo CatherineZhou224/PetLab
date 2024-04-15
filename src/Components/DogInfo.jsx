@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { AutoComplete, Input, List, Typography } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
-import Card from 'react-bootstrap/Card';
+import Card from "react-bootstrap/Card";
 import ModalImage from "react-modal-image";
 
-export function DogInfo(
-  { addToDogCollection, removeDogCollection, handleSelectCat }
-) {
+export function DogInfo({
+  addToDogCollection,
+  removeDogCollection,
+  handleSelectCat,
+}) {
   const [breeds, setBreeds] = useState([]);
   // const [searchResults, setSearchResults] = useState([]);
   // const [selectedBreed, setSelectedBreed] = useState(null);
@@ -78,57 +80,52 @@ export function DogInfo(
           style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
         />
 
-          <div>
+        <div>
+          {!dogImage && message && <h3>{message}</h3>}
+          {dogImage && !message && (
+            <Card style={{ width: "20rem" }}>
+              <Card.Img
+                variant="top"
+                src={dogImage}
+                style={{ width: 318, height: 288, objectFit: "cover" }}
+              />
 
-      <Card style={{ width: '20rem' }}>
-      <Card.Img 
-        variant="top" 
-        as={() => 
-          <ModalImage 
-            small={dogImage && dogImage } 
-            large={dogImage && dogImage }
-            alt={dogName && dogName}
-          />} 
-      />
+              <Card.Body>
+                <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
+                <Card.Text>TBD</Card.Text>
 
-      <Card.Body>
-        <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
-        <Card.Text>
-          TBD
-        </Card.Text>
-        
-        <Button
-          variant="primary"
-          onClick={() =>
-            addToDogCollection({
-              key: dogName,
-              icon: (
-                <span 
-                  // onClick={() => handleSelecCat(cat)}
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    addToDogCollection({
+                      key: dogName,
+                      icon: (
+                        <span
+                        // onClick={() => handleSelecCat(cat)}
+                        >
+                          <span
+                            className="remove-button"
+                            onClick={(e) => handleRemoveClick(e, dogName)}
+                          >
+                            ❌
+                          </span>
+                          <img
+                            src={dogImage}
+                            alt={dogName}
+                            style={{ width: "30px", height: "30px" }}
+                          />
+                        </span>
+                      ),
+                      label: dogName,
+                    })
+                  }
                 >
-                  <span
-                    className="remove-button"
-                    onClick={(e) => handleRemoveClick(e, dogName)}
-                  >
-                    ❌
-                  </span>
-                  <img
-                    src={dogImage}
-                    alt={dogName}
-                    style={{ width: "30px", height: "30px" }}
-                  />
-                </span>
-              ),
-              label: dogName,
-            })
-          }
-        >
-          Add to collection
-        </Button>
-      </Card.Body>
-      </Card>
-      </div>
-
+                  Add to collection
+                </Button>
+              </Card.Body>
+            </Card>
+          )}
+        </div>
       </div>
     </>
   );

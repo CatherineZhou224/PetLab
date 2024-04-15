@@ -4,9 +4,8 @@ import { getCatInfo } from "../utils/utils";
 import { useEffect, useState } from "react";
 import { List } from "antd";
 
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import ModalImage from "react-modal-image";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
 export function CatInfo({
   addToCatCollection,
@@ -17,6 +16,7 @@ export function CatInfo({
   const [catName, setCatName] = useState("");
   const [catLength, setCatLength] = useState("");
   const [catOrigin, setCatOrigin] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleClick = async (item) => {
     try {
@@ -27,9 +27,12 @@ export function CatInfo({
         setCatLength(cat.length);
         setCatOrigin(cat.origin);
         setCatImage(cat.image_link);
+        setMessage();
         // Log or handle other properties as needed
       } else {
-        console.log("No data found for the specified cat.");
+        setCatName();
+        setCatImage();
+        setMessage("No data found for the specified cat.");
       }
     } catch (error) {
       console.error("Error fetching cat information:", error);
@@ -58,52 +61,50 @@ export function CatInfo({
         style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
       />
       <div>
-
-        <Card style={{ width: '20rem' }}>
-      <Card.Img 
-        variant="top" 
-        as={() => 
-          <ModalImage 
-            small={catImage && catImage } 
-            large={catImage && catImage }
-            alt={catName && catName}
-          />}
-      />
-      <Card.Body>
-        <Card.Title>{catName && `Name: ${catName}`}</Card.Title>
-        <Card.Text>
-          {catOrigin && `Origin: ${catOrigin}`}<br/>
-          {catLength && `Length: ${catLength}`}
-        </Card.Text>
-        <Button
-          variant="primary"
-          onClick={() =>
-            addToCatCollection({
-              key: catName,
-              icon: (
-                <span onClick={() => handleCustomizeCat(cat)}>
-                  <span
-                    className="remove-button"
-                    onClick={(e) => handleRemoveClick(e, catName)}
-                  >
-                    ❌
-                  </span>
-                  <img
-                    src={catImage}
-                    alt={catName}
-                    style={{ width: "30px", height: "30px" }}
-                  />
-                </span>
-              ),
-              label: catName,
-            })
-          }
-        >
-          Add to collection
-        </Button>
-      </Card.Body>
-      </Card>
-
+        {!catImage && message && <h3>{message}</h3>}
+        {catImage && !message && (
+          <Card style={{ width: "20rem" }}>
+            <Card.Img
+              variant="top"
+              src={catImage}
+              style={{ width: 318, height: 288, objectFit: "cover" }}
+            />
+            <Card.Body>
+              <Card.Title>{catName && `Name: ${catName}`}</Card.Title>
+              <Card.Text>
+                {catOrigin && `Origin: ${catOrigin}`}
+                <br />
+                {catLength && `Length: ${catLength}`}
+              </Card.Text>
+              <Button
+                variant="primary"
+                onClick={() =>
+                  addToCatCollection({
+                    key: catName,
+                    icon: (
+                      <span onClick={() => handleCustomizeCat(cat)}>
+                        <span
+                          className="remove-button"
+                          onClick={(e) => handleRemoveClick(e, catName)}
+                        >
+                          ❌
+                        </span>
+                        <img
+                          src={catImage}
+                          alt={catName}
+                          style={{ width: "30px", height: "30px" }}
+                        />
+                      </span>
+                    ),
+                    label: catName,
+                  })
+                }
+              >
+                Add to collection
+              </Button>
+            </Card.Body>
+          </Card>
+        )}
       </div>
     </div>
   );
