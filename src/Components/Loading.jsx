@@ -17,9 +17,9 @@ const Loading = ({ setProgress }) => {
                 const nextNow = prevNow + 5;
                 if (nextNow >= 100) {
                     clearInterval(intervalId);
-                    setFadeOut(true); // Start the fade-out
+                    setFadeOut(false); // Start the fade-out
                     setTimeout(() => {
-                        setProgress(100);
+                        setProgress(90);
                     }, 500);
                     return 100;
                 }
@@ -37,12 +37,13 @@ const Loading = ({ setProgress }) => {
 
     return (
         <div className={loadingStyle}>
+            <p className='pet-lab-welcome'>Welcome to</p>
             <h1 className='pet-lab-title'>PET LAB</h1>
             <h2 className='pet-lab-subtitle'>Find the Breed That Speaks to Your Heart!</h2>
             <p className='loading-text'>Loading...</p>
             <ProgressBar 
                 className='custom-progress'
-                style={{ position: 'absolute', top: '50%', left: '50%', width: '50%', height: '25px', margin: '0 auto' , transform: 'translate(-50%, -50%)'}}
+                style={{ width: '50%', height: '25px', margin: '10px auto'}}
                 animated 
                 now={now}
             />
