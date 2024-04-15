@@ -43,7 +43,7 @@
 /* loading page css */
 .custom-body {
   background: url("./src/assets/background2.png");
-  background-color: #65C5C0;
+  background-color: #65c5c0;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -126,7 +126,7 @@
   text-transform: uppercase;
 }
 
-.pet-lab-welcome{
+.pet-lab-welcome {
   color: white;
   text-align: center;
   font-family: "Poppins", sans-serif;
@@ -136,7 +136,6 @@
   line-height: normal;
   padding-top: 5%;
   margin: 0;
-
 }
 
 .loading-content {
@@ -169,4 +168,8 @@
 
 .ant-menu-item {
   padding-left: 20px !important;
+}
+
+.zoom:hover {
+  transform: scale(1.5); /* 150% zoom on hover */
 }

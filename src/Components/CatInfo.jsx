@@ -67,7 +67,13 @@ export function CatInfo({
             <Card.Img
               variant="top"
               src={catImage}
-              style={{ width: 318, height: 288, objectFit: "cover" }}
+              style={{
+                width: 318,
+                height: 288,
+                objectFit: "cover",
+                transition: "transform 0.2s",
+              }}
+              className="zoom"
             />
             <Card.Body>
               <Card.Title>{catName && `Name: ${catName}`}</Card.Title>

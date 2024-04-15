@@ -3,7 +3,6 @@ import { AutoComplete, Input, List, Typography } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
-import ModalImage from "react-modal-image";
 
 export function DogInfo({
   addToDogCollection,
@@ -87,7 +86,13 @@ export function DogInfo({
               <Card.Img
                 variant="top"
                 src={dogImage}
-                style={{ width: 318, height: 288, objectFit: "cover" }}
+                style={{
+                  width: 318,
+                  height: 288,
+                  objectFit: "cover",
+                  transition: "transform 0.2s",
+                }}
+                className="zoom"
               />
 
               <Card.Body>
