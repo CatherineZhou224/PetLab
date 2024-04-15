@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { AutoComplete, Input, List, Typography, Card } from "antd";
+import { AutoComplete, Input, List, Typography } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
+import { Button } from "react-bootstrap";
+import Card from 'react-bootstrap/Card';
+import ModalImage from "react-modal-image";
 
-export function DogInfo() {
+export function DogInfo(
+  { addToDogCollection, removeDogCollection, handleSelectCat }
+) {
   const [breeds, setBreeds] = useState([]);
   // const [searchResults, setSearchResults] = useState([]);
   // const [selectedBreed, setSelectedBreed] = useState(null);
@@ -44,6 +49,11 @@ export function DogInfo() {
     }
   };
 
+  const handleRemoveClick = (e, dogName) => {
+    e.stopPropagation(); // Prevents List.Item onClick from being triggered
+    removeDogCollection(dogName);
+  };
+
   return (
     <>
       {/* <AutoComplete
@@ -67,11 +77,58 @@ export function DogInfo() {
           )}
           style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
         />
-        <div>
-          {message && <p>{message}</p>}
-          {dogName && <p>Name: {dogName}</p>}
-          {dogImage && <img className="image" src={dogImage} />}
-        </div>
+
+          <div>
+
+      <Card style={{ width: '20rem' }}>
+      <Card.Img 
+        variant="top" 
+        as={() => 
+          <ModalImage 
+            small={dogImage && dogImage } 
+            large={dogImage && dogImage }
+            alt={dogName && dogName}
+          />} 
+      />
+
+      <Card.Body>
+        <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
+        <Card.Text>
+          TBD
+        </Card.Text>
+        
+        <Button
+          variant="primary"
+          onClick={() =>
+            addToDogCollection({
+              key: dogName,
+              icon: (
+                <span 
+                  // onClick={() => handleSelecCat(cat)}
+                >
+                  <span
+                    className="remove-button"
+                    onClick={(e) => handleRemoveClick(e, dogName)}
+                  >
+                    ❌
+                  </span>
+                  <img
+                    src={dogImage}
+                    alt={dogName}
+                    style={{ width: "30px", height: "30px" }}
+                  />
+                </span>
+              ),
+              label: dogName,
+            })
+          }
+        >
+          Add to collection
+        </Button>
+      </Card.Body>
+      </Card>
+      </div>
+
       </div>
     </>
   );

@@ -8,6 +8,9 @@ import { CatInfo } from "./CatInfo";
 import DogIcon from "./DogIcon";
 import CatIcon from "./CatIcon";
 
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+
 const { Header, Sider } = Layout;
 const MainContent = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -29,6 +32,9 @@ const MainContent = () => {
 
   // Handlers for adding to collections
   const addToDogCollection = (dog) => {
+    if (dogCollection.some((d) => d.label === dog.label)) {
+      return alert("This dog is already in the collection.");
+    }
     setDogCollection((prev) => [...prev, dog]);
   };
 
@@ -44,11 +50,22 @@ const MainContent = () => {
     setCatCollection((prev) => prev.filter((cat) => cat.label !== catName));
   };
 
+  const removeDogCollection = (dogName) => {
+    setDogCollection((prev) => prev.filter((dog) => dog.label !== dogName));
+  };
+
   const [selectedCat, setSelectedCat] = useState(null);
 
-  // Function to handle selecting a cat from the collection
-  const handleSelectCat = (cat) => {
-    setSelectedCat(cat);
+  // Function to handle selecting a cat from the collection and give it a name
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleCustomizeCat = (cat) => {
+    //when cat is seleted, pop up a modal to give it a name
+
+    // setSelectedCat(cat);
   };
 
   return (
@@ -67,12 +84,7 @@ const MainContent = () => {
               key: "1",
               icon: <DogIcon fill="white" />,
               label: "Dog Collection",
-              children: [
-                {
-                  key: "1-1",
-                  label: "image1",
-                },
-              ],
+              children: dogCollection,
             },
             {
               key: "2",
@@ -122,7 +134,13 @@ const MainContent = () => {
             }
             key="1"
           >
-            <DogInfo activeTab={activeTab} />
+            <DogInfo 
+              activeTab={activeTab}
+              addToDogCollection={addToDogCollection}
+              removeDogCollection={removeDogCollection}
+              // handleSelectCat={handleSelectCat}
+
+            />
           </TabPane>
           <TabPane
             tab={
@@ -136,11 +154,51 @@ const MainContent = () => {
             <CatInfo
               addToCatCollection={addToCatCollection}
               removeCatCollection={removeCatCollection}
-              handleSelectCat={handleSelectCat}
+              handleCustomizeCat={handleCustomizeCat}
             />
           </TabPane>
         </Tabs>
       </Layout>
+
+
+      <>
+      <Button variant="primary" onClick={handleShow}>
+        Launch demo modal
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="name@example.com"
+                autoFocus
+              />
+            </Form.Group>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Label>Example textarea</Form.Label>
+              <Form.Control as="textarea" rows={3} />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
     </Layout>
   );
 };

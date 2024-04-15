@@ -4,12 +4,14 @@ import { getCatInfo } from "../utils/utils";
 import { useEffect, useState } from "react";
 import { List } from "antd";
 
-import { Button } from "react-bootstrap";
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import ModalImage from "react-modal-image";
 
 export function CatInfo({
   addToCatCollection,
   removeCatCollection,
-  handleSelectCat,
+  handleCustomizeCat,
 }) {
   const [catImage, setCatImage] = useState("");
   const [catName, setCatName] = useState("");
@@ -56,20 +58,30 @@ export function CatInfo({
         style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
       />
       <div>
-        <div>
-          {catName && <p>Name: {catName}</p>}
-          {catOrigin && <p>Origin: {catOrigin}</p>}
-          {catLength && <p>Length: {catLength}</p>}
-          {catImage && <img className="image" src={catImage} />}
-        </div>
 
+        <Card style={{ width: '20rem' }}>
+      <Card.Img 
+        variant="top" 
+        as={() => 
+          <ModalImage 
+            small={catImage && catImage } 
+            large={catImage && catImage }
+            alt={catName && catName}
+          />}
+      />
+      <Card.Body>
+        <Card.Title>{catName && `Name: ${catName}`}</Card.Title>
+        <Card.Text>
+          {catOrigin && `Origin: ${catOrigin}`}<br/>
+          {catLength && `Length: ${catLength}`}
+        </Card.Text>
         <Button
           variant="primary"
           onClick={() =>
             addToCatCollection({
               key: catName,
               icon: (
-                <span onClick={() => handleSelectCat(cat)}>
+                <span onClick={() => handleCustomizeCat(cat)}>
                   <span
                     className="remove-button"
                     onClick={(e) => handleRemoveClick(e, catName)}
@@ -89,6 +101,9 @@ export function CatInfo({
         >
           Add to collection
         </Button>
+      </Card.Body>
+      </Card>
+
       </div>
     </div>
   );
