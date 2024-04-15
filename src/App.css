@@ -42,8 +42,8 @@
 
 /* loading page css */
 .custom-body {
-  background: url("./src/assets/view-adorable-3d-cat.png");
-  background-color: lightgray;
+  background: url("./src/assets/background2.png");
+  background-color: #65C5C0;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -84,21 +84,17 @@
 .loading-text {
   font-size: 1.5em;
   font-weight: bold;
-  color: #fff6e5;
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translateX(-50%);
+  color: white;
+  text-align: center;
+  margin: 14% 0 25px 0;
 }
 
 .loading-num {
   font-size: 1.5em;
   font-weight: bold;
-  color: #fff6e5;
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translateX(-50%);
+  color: white;
+  margin-top: 20px;
+  text-align: center;
   font-family: "Poppins", sans-serif;
   font-size: 70px;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -111,16 +107,12 @@
   font-size: 100px;
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: 120px;
   text-transform: uppercase;
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .pet-lab-subtitle {
-  color: #58554f;
+  color: white;
   text-align: center;
   font-family: "Poppins", sans-serif;
   font-size: 28px;
@@ -129,9 +121,22 @@
   line-height: normal;
   position: absolute;
   width: 100%;
-  top: 23%;
-  left: 50%;
-  transform: translateX(-50%);
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.pet-lab-welcome{
+  color: white;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding-top: 5%;
+  margin: 0;
+
 }
 
 .loading-content {
