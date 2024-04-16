@@ -19,6 +19,7 @@ export function DogInfo({
   const [breeds, setBreeds] = useState([]);
   const [dogBreed, setDogBreed] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [dogBreed, setDogBreed] = useState("");
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
   const [dogChildren, setDogChildren] = useState("");
@@ -35,6 +36,11 @@ export function DogInfo({
     const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
     setSearchResults(filteredBreeds);
   };
+  const [customNames, setCustomNames] = useState(() => {
+    const storedCustomNames = localStorage.getItem("customNames");
+    return storedCustomNames ? JSON.parse(storedCustomNames) : {};
+  });
+
 
   const handleSelect = async (breed) => {
     try {
