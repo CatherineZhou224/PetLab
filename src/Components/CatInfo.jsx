@@ -164,11 +164,10 @@ export function CatInfo({
                   {catLength && `Length: ${catLength}`}
                 </Card.Text>
                 <BarChart
-                  layout="horizontal"
                   xAxis={[
                     {
                       scaleType: "band",
-                      data: ["Children", "Other Dogs", "Strangers"],
+                      data: ["Children", "Other Pets", "Family"],
                       label: "Friendliness Level with Other Species",
                     },
                   ]}
