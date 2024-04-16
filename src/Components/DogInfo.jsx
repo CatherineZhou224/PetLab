@@ -16,17 +16,6 @@ export function DogInfo({
   const [dogImage, setDogImage] = useState("");
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const fetchBreeds = async () => {
-      const data = await getDogBreeds();
-      const breedNames = Object.keys(data.message);
-      setBreeds(breedNames);
-      // setSearchResults(breedNames);
-    };
-    fetchBreeds();
-    handleSelect("affenpinscher");
-  }, []);
-
   // const handleSearch = (value) => {
   //   const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
   //   setSearchResults(filteredBreeds);
@@ -34,21 +23,65 @@ export function DogInfo({
 
   const handleSelect = async (breed) => {
     try {
-      const data = await getDogInfo(breed);
-      if (data.length > 0) {
-        const dog = data[0];
-        setDogName(dog.name);
-        setDogImage(dog.image_link);
-        setMessage();
+      const existingData = JSON.parse(localStorage.getItem(breed));
+      if (existingData) {
+        if (existingData === "empty") {
+          setDogName("");
+          setDogImage("");
+          setMessage("No data found for the specified dog.");
+        } else {
+          setDogName(existingData.name);
+          setDogImage(existingData.image_link);
+          setMessage("");
+        }
       } else {
-        setDogName();
-        setDogImage();
-        setMessage("No data found for the specified dog.");
+        const data = await getDogInfo(breed);
+        if (data.length > 0) {
+          const dog = data[0];
+          localStorage.setItem(breed, JSON.stringify(dog));
+          setDogName(dog.name);
+          setDogImage(dog.image_link);
+          setMessage("");
+        } else {
+          localStorage.setItem(breed, JSON.stringify("empty"));
+          setDogName("");
+          setDogImage("");
+          setMessage("No data found for the specified dog.");
+        }
       }
     } catch (error) {
       console.error("Error fetching dog information:", error);
+      setMessage("Error fetching dog information. Please try again later.");
     }
   };
+
+  useEffect(() => {
+    const fetchBreeds = async () => {
+      try {
+        const data = await getDogBreeds();
+        const breedNames = Object.keys(data.message);
+        setBreeds(breedNames);
+        localStorage.setItem("breeds", JSON.stringify(breedNames));
+      } catch (error) {
+        console.error("Error fetching dog breeds:", error);
+      }
+    };
+
+    try {
+      const initialBreeds = localStorage.getItem("breeds");
+      console.log("Initial breeds from localStorage:", initialBreeds);
+
+      if (initialBreeds) {
+        setBreeds(JSON.parse(initialBreeds));
+      } else {
+        fetchBreeds();
+      }
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+    }
+
+    handleSelect("affenpinscher");
+  }, []);
 
   const handleRemoveClick = (e, dogName) => {
     e.stopPropagation(); // Prevents List.Item onClick from being triggered

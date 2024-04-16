@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import catBreeds from "../utils/catBreeds";
 import { getCatInfo } from "../utils/utils";
-import { useEffect, useState } from "react";
 import { List } from "antd";
-
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
@@ -18,30 +16,41 @@ export function CatInfo({
   const [catOrigin, setCatOrigin] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleClick = async (item) => {
+  const handleClick = async (breed) => {
     try {
-      const data = await getCatInfo(item);
-      if (data.length > 0) {
-        const cat = data[0];
-        setCatName(cat.name);
-        setCatLength(cat.length);
-        setCatOrigin(cat.origin);
-        setCatImage(cat.image_link);
-        setMessage();
-        // Log or handle other properties as needed
+      const existingData = JSON.parse(localStorage.getItem(breed));
+      if (existingData) {
+        setCatName(existingData.name);
+        setCatLength(existingData.length);
+        setCatOrigin(existingData.origin);
+        setCatImage(existingData.image_link);
+        setMessage("");
       } else {
-        setCatName();
-        setCatImage();
-        setMessage("No data found for the specified cat.");
+        const data = await getCatInfo(breed);
+        if (data.length > 0) {
+          const cat = data[0];
+          localStorage.setItem(breed, JSON.stringify(cat));
+          setCatName(cat.name);
+          setCatLength(cat.length);
+          setCatOrigin(cat.origin);
+          setCatImage(cat.image_link);
+          setMessage("");
+          // Log or handle other properties as needed
+        } else {
+          setCatName("");
+          setCatImage("");
+          setMessage("No data found for the specified cat.");
+        }
       }
     } catch (error) {
       console.error("Error fetching cat information:", error);
+      setMessage("Error fetching cat information. Please try again later.");
       // Handle errors, such as network errors or server errors
     }
   };
 
   useEffect(() => {
-    handleClick("Abyssinia");
+    handleClick("Abyssinian");
   }, []);
 
   const handleRemoveClick = (e, catName) => {
@@ -55,8 +64,10 @@ export function CatInfo({
         size="small"
         bordered
         dataSource={catBreeds}
-        renderItem={(item) => (
-          <List.Item onClick={() => handleClick(item)}>{item}</List.Item>
+        renderItem={(breed, key) => (
+          <List.Item onClick={() => handleClick(breed)} key={key}>
+            {breed}
+          </List.Item>
         )}
         style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
       />
