@@ -17,7 +17,6 @@ export function DogInfo({
 }) {
   const [breeds, setBreeds] = useState([]);
   const [dogBreed, setDogBreed] = useState("");
-  // const [searchResults, setSearchResults] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
@@ -100,9 +99,6 @@ export function DogInfo({
 
     handleSelect("affenpinscher");
   }, []);
-
-
-
 
 
   // Function to change the name of the pet on the card
