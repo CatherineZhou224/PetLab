@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AutoComplete, Input, List, Typography } from "antd";
+import { AutoComplete, Input, List } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
@@ -15,15 +15,15 @@ export function DogInfo({
 }) {
   const [breeds, setBreeds] = useState([]);
   // const [searchResults, setSearchResults] = useState([]);
-  // const [selectedBreed, setSelectedBreed] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
   const [message, setMessage] = useState("");
 
-  // const handleSearch = (value) => {
-  //   const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
-  //   setSearchResults(filteredBreeds);
-  // };
+  const handleSearch = (value) => {
+    const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
+    setSearchResults(filteredBreeds);
+  };
 
   const handleSelect = async (breed) => {
     try {
@@ -50,7 +50,7 @@ export function DogInfo({
           localStorage.setItem(breed, JSON.stringify("empty"));
           setDogName("");
           setDogImage("");
-          setMessage("No data found for the specified dog.");
+          setMessage("No data found for the specified dog:(");
         }
       }
     } catch (error) {
@@ -150,7 +150,7 @@ export function DogInfo({
 
   return (
     <>
-      {/* <AutoComplete
+      <AutoComplete
         style={{ width: 300, marginBottom: 20 }}
         options={searchResults.map((breed) => ({ value: breed }))}
         onSelect={handleSelect}
@@ -158,7 +158,7 @@ export function DogInfo({
         placeholder="Search for dog breeds"
       >
         <Input.Search enterButton />
-      </AutoComplete> */}
+      </AutoComplete>
 
       <div className="container">
         <List
