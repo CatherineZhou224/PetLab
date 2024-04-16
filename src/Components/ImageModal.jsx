@@ -5,10 +5,15 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const ImageModal = ({ src, alt, caption, onClose, handleCloseSave, updateCollectionName }) => {
+const ImageModal = ({
+  src,
+  alt,
+  caption,
+  onClose,
+  handleCloseSave,
+  updateCollectionName,
+}) => {
   const [newName, setNewName] = useState("");
-
-
 
   return (
     <>
@@ -32,12 +37,12 @@ const ImageModal = ({ src, alt, caption, onClose, handleCloseSave, updateCollect
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
           />
-          <Button 
-            variant="success" 
+          <Button
+            variant="success"
             id="button-addon2"
             onClick={() => {
-                handleCloseSave(newName);
-                updateCollectionName(newName, alt);
+              handleCloseSave(newName, alt);
+              updateCollectionName(newName, alt);
               setNewName("");
             }}
           >

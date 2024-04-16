@@ -1,11 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import Col from 'react-bootstrap/Col';
 import { useState } from "react";
 
-const NameCustomizeModal = ({ show, handleClose, handleCloseSave}) => {
-
-    const [petNameInput, setPetNameInput] = useState("");
+const NameCustomizeModal = ({ show, handleClose, handleCloseSave, breed }) => {
+  const [petNameInput, setPetNameInput] = useState("");
 
   return (
     <>
@@ -18,6 +18,13 @@ const NameCustomizeModal = ({ show, handleClose, handleCloseSave}) => {
           <Form>
             <Form.Group className="mb-3" controlId="customized.petName">
               <Form.Label>Name your pet</Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  plaintext
+                  readOnly
+                  defaultValue={`Breed: ${breed}`}
+                />
+              </Col>
               <Form.Control
                 size="lg"
                 type="text"
@@ -33,9 +40,10 @@ const NameCustomizeModal = ({ show, handleClose, handleCloseSave}) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button 
-            variant="primary" 
-            onClick={() => handleCloseSave(petNameInput)}>
+          <Button
+            variant="primary"
+            onClick={() => handleCloseSave(petNameInput, breed)}
+          >
             Save Changes
           </Button>
         </Modal.Footer>
