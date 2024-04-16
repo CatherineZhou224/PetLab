@@ -5,10 +5,14 @@ import { List } from "antd";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
+import ImageModal from "./ImageModal";
+import NameCustomizeModal from "./NameCustomizeModal";
+
 export function CatInfo({
   addToCatCollection,
   removeCatCollection,
-  handleCustomizeCat,
+  catCollection,
+  updateCollectionName,
 }) {
   const [catImage, setCatImage] = useState("");
   const [catName, setCatName] = useState("");
@@ -58,6 +62,33 @@ export function CatInfo({
     removeCatCollection(catName);
   };
 
+
+    //image modal
+    const [selectedCollectionIndex, setSelectedCollectionIndex] = useState(0);
+    const [isOpen, setIsOpen] = useState(false);
+    const showModal = (e) => {
+      e.stopPropagation(); // Stop the event from bubbling up further
+      const index = e.currentTarget.alt.split(" ")[1];
+  
+      if (index !== undefined) {
+        setIsOpen(true);
+        setSelectedCollectionIndex(parseInt(index, 10)); // Parse the index to ensure it's a number
+        console.log("Selected Collection Index:", index);
+      } else {
+        console.error("Invalid index extracted from alt attribute");
+      }
+    };
+
+    // Function to handle selecting a pet from the collection and give it a name
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+  
+    const handleClose = () => setShow(false);
+    const handleCloseSave = (petNameInput) => {
+      setShow(false);
+      setCatName(petNameInput);
+    };
+
   return (
     <div className="container">
       <List
@@ -74,17 +105,15 @@ export function CatInfo({
       <div>
         {!catImage && message && <h3>{message}</h3>}
         {catImage && !message && (
-          <Card style={{ width: "20rem" }}>
+          <Card style={{ width: "25rem" }}>
             <Card.Img
               variant="top"
               src={catImage}
               style={{
-                width: 318,
-                height: 288,
+                width: "100%",
+                height: "300px",
                 objectFit: "cover",
-                transition: "transform 0.2s",
               }}
-              className="zoom"
             />
             <Card.Body>
               <Card.Title>{catName && `Name: ${catName}`}</Card.Title>
@@ -93,13 +122,29 @@ export function CatInfo({
                 <br />
                 {catLength && `Length: ${catLength}`}
               </Card.Text>
+
+              <Button
+                  onClick={handleShow}
+                  variant="secondary"
+                  style={{ marginRight: "10px" }}
+                >
+                  Name your cat
+                </Button>
+
+              <NameCustomizeModal
+                  show={show}
+                  handleClose={handleClose}
+                  handleCloseSave={handleCloseSave}
+                />
+
+
               <Button
                 variant="primary"
                 onClick={() =>
                   addToCatCollection({
-                    key: catName,
+                    key: `cat ${catCollection.length}`,
                     icon: (
-                      <span onClick={() => handleCustomizeCat(cat)}>
+                      <span>
                         <span
                           className="remove-button"
                           onClick={(e) => handleRemoveClick(e, catName)}
@@ -107,8 +152,10 @@ export function CatInfo({
                           ❌
                         </span>
                         <img
+                          onClick={(e) => showModal(e)}
+                          className="image"
                           src={catImage}
-                          alt={catName}
+                          alt={`cat ${catCollection.length}`}
                           style={{ width: "30px", height: "30px" }}
                         />
                       </span>
@@ -122,6 +169,24 @@ export function CatInfo({
             </Card.Body>
           </Card>
         )}
+
+        {/* image modal */}
+        {isOpen &&
+          catCollection.map((cat, index) => {
+            if (index === selectedCollectionIndex) {
+              return (
+                <ImageModal
+                  key={index}
+                  src={cat.icon.props.children[1].props.src}
+                  alt={`cat ${index}`}
+                  caption={catName}
+                  handleCloseSave={handleCloseSave}
+                  onClose={() => setIsOpen(false)}
+                  updateCollectionName={updateCollectionName}
+                />
+              );
+            }
+          })}
       </div>
     </div>
   );
