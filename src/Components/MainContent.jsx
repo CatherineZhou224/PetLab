@@ -8,9 +8,6 @@ import { CatInfo } from "./CatInfo";
 import DogIcon from "./DogIcon";
 import CatIcon from "./CatIcon";
 
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-
 const { Header, Sider } = Layout;
 const MainContent = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -27,8 +24,9 @@ const MainContent = () => {
 
   //Pet Collection Manager
   // States for dog and cat collections
-  const [dogCollection, setDogCollection] = useState([]);
-  const [catCollection, setCatCollection] = useState([]);
+ const [dogCollection, setDogCollection] = useState([]);
+
+const [catCollection, setCatCollection] = useState([]);
 
   // Handlers for adding to collections
   const addToDogCollection = (dog) => {
@@ -36,6 +34,7 @@ const MainContent = () => {
       return alert("This dog is already in the collection.");
     }
     setDogCollection((prev) => [...prev, dog]);
+    localStorage.setItem("dogCollection", JSON.stringify(dogCollection));
   };
 
   const addToCatCollection = (cat) => {
@@ -44,6 +43,7 @@ const MainContent = () => {
       return alert("This cat is already in the collection.");
     }
     setCatCollection((prev) => [...prev, cat]);
+    localStorage.setItem("catCollection", JSON.stringify(catCollection));
   };
 
   const removeCatCollection = (catName) => {
@@ -54,19 +54,47 @@ const MainContent = () => {
     setDogCollection((prev) => prev.filter((dog) => dog.label !== dogName));
   };
 
-  const [selectedCat, setSelectedCat] = useState(null);
+  const updateCollectionName = (newName, alt) => {
+    setDogCollection(prev => prev.map(dog => {
+        if (dog.key === alt) {
+            return {...dog, label: newName};
+        }
+        return dog;
+    }));
+    localStorage.setItem("dogCollection", JSON.stringify(dogCollection));
+    setCatCollection(prev => prev.map(cat => {
+        if (cat.key === alt) {
+            return {...cat, label: newName};
+        }
+        return cat;
+    }));
+    localStorage.setItem("catCollection", JSON.stringify(catCollection));
 
-  // Function to handle selecting a cat from the collection and give it a name
-  const [show, setShow] = useState(false);
+};
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
-  const handleCustomizeCat = (cat) => {
-    //when cat is seleted, pop up a modal to give it a name
 
-    // setSelectedCat(cat);
-  };
+  //Card hover effect 
+  // const [showPopup, setShowPopup] = useState(false);
+  // const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  // const handleMouseMove = (event) => {
+  //   const { clientX, clientY } = event;
+  //   setPosition({
+  //     x: clientX,
+  //     y: clientY
+  //   });
+  // };
+
+  // const handleMouseEnter = () => {
+  //   setShowPopup(true);
+  // };
+
+  // const handleMouseLeave = () => {
+  //   setShowPopup(false);
+  // };
+
+  //end
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -84,6 +112,7 @@ const MainContent = () => {
               key: "1",
               icon: <DogIcon fill="white" />,
               label: "Dog Collection",
+              //if the dog info is already in the local storage, display it
               children: dogCollection,
             },
             {
@@ -138,7 +167,8 @@ const MainContent = () => {
               activeTab={activeTab}
               addToDogCollection={addToDogCollection}
               removeDogCollection={removeDogCollection}
-              // handleSelectCat={handleSelectCat}
+              dogCollection={dogCollection}
+              updateCollectionName={updateCollectionName}
 
             />
           </TabPane>
@@ -154,51 +184,13 @@ const MainContent = () => {
             <CatInfo
               addToCatCollection={addToCatCollection}
               removeCatCollection={removeCatCollection}
-              handleCustomizeCat={handleCustomizeCat}
+              catCollection={catCollection}
+              updateCollectionName={updateCollectionName}
             />
           </TabPane>
         </Tabs>
       </Layout>
 
-
-      <>
-      <Button variant="primary" onClick={handleShow}>
-        Launch demo modal
-      </Button>
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="name@example.com"
-                autoFocus
-              />
-            </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Example textarea</Form.Label>
-              <Form.Control as="textarea" rows={3} />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
     </Layout>
   );
 };

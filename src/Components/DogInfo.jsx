@@ -4,10 +4,14 @@ import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 
+import ImageModal from "./ImageModal";
+import NameCustomizeModal from "./NameCustomizeModal";
+
 export function DogInfo({
   addToDogCollection,
   removeDogCollection,
-  handleSelectCat,
+  dogCollection,
+  updateCollectionName,
 }) {
   const [breeds, setBreeds] = useState([]);
   // const [searchResults, setSearchResults] = useState([]);
@@ -88,6 +92,62 @@ export function DogInfo({
     removeDogCollection(dogName);
   };
 
+  // hover effect
+  // const [showPopup, setShowPopup] = useState(false);
+  // const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  // const handleMouseMove = (event) => {
+  //   const cursorX = event.clientX,
+  //     cursorY = event.clientY;
+  //   const itemLeft = event.target.getBoundingClientRect().left,
+  //     itemTop = event.target.getBoundingClientRect().top;
+
+  //   const positionX = cursorX - itemLeft,
+  //     positionY = cursorY - itemTop - window.scrollY;
+
+  //   setPosition({
+  //     x: positionX,
+  //     y: positionY,
+  //   });
+  // };
+
+  // const handleMouseEnter = (event) => {
+  //   event.preventDefault();
+  //   setShowPopup(true);
+  //   console.log("showPopup", showPopup);
+  //   console.log("position", position);
+  // };
+
+  // const handleMouseLeave = () => {
+  //   setShowPopup(false);
+  // };
+
+  //image modal
+  const [selectedCollectionIndex, setSelectedCollectionIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const showModal = (e) => {
+    e.stopPropagation(); // Stop the event from bubbling up further
+    const index = e.currentTarget.alt.split(" ")[1];
+
+    if (index !== undefined) {
+      setIsOpen(true);
+      setSelectedCollectionIndex(parseInt(index, 10)); // Parse the index to ensure it's a number
+      console.log("Selected Collection Index:", index);
+    } else {
+      console.error("Invalid index extracted from alt attribute");
+    }
+  };
+
+  // Function to handle selecting a pet from the collection and give it a name
+  const [show, setShow] = useState(false);
+  const handleShow = () => setShow(true);
+
+  const handleClose = () => setShow(false);
+  const handleCloseSave = (petNameInput) => {
+    setShow(false);
+    setDogName(petNameInput);
+  };
+
   return (
     <>
       {/* <AutoComplete
@@ -99,6 +159,7 @@ export function DogInfo({
       >
         <Input.Search enterButton />
       </AutoComplete> */}
+
       <div className="container">
         <List
           size="small"
@@ -115,32 +176,55 @@ export function DogInfo({
         <div>
           {!dogImage && message && <h3>{message}</h3>}
           {dogImage && !message && (
-            <Card style={{ width: "20rem" }}>
+            <Card style={{ width: "25rem" }}>
               <Card.Img
                 variant="top"
                 src={dogImage}
                 style={{
-                  width: 318,
-                  height: 288,
+                  width: "100%",
+                  height: "300px",
                   objectFit: "cover",
-                  transition: "transform 0.2s",
                 }}
-                className="zoom"
               />
-
               <Card.Body>
                 <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
                 <Card.Text>TBD</Card.Text>
 
+                {/* {showPopup && (
+                  <div
+                    className="popup"
+                    style={{
+                      position: "absolute",
+                      left: `${position.x + 150}px`,
+                      top: `${position.y + 250}px`,
+                      // pointerEvents: 'none',
+                    }}
+                  >
+                    Click me!
+                  </div>
+                )} */}
+
+                <Button
+                  onClick={handleShow}
+                  variant="secondary"
+                  style={{ marginRight: "10px" }}
+                >
+                  Name your dog
+                </Button>
+
+                <NameCustomizeModal
+                  show={show}
+                  handleClose={handleClose}
+                  handleCloseSave={handleCloseSave}
+                />
+
                 <Button
                   variant="primary"
-                  onClick={() =>
+                  onClick={() => {
                     addToDogCollection({
-                      key: dogName,
+                      key: `dog ${dogCollection.length}`,
                       icon: (
-                        <span
-                        // onClick={() => handleSelecCat(cat)}
-                        >
+                        <span>
                           <span
                             className="remove-button"
                             onClick={(e) => handleRemoveClick(e, dogName)}
@@ -148,21 +232,41 @@ export function DogInfo({
                             ❌
                           </span>
                           <img
+                            onClick={(e) => showModal(e)}
+                            className="image"
                             src={dogImage}
-                            alt={dogName}
+                            alt={`dog ${dogCollection.length}`}
                             style={{ width: "30px", height: "30px" }}
                           />
                         </span>
                       ),
                       label: dogName,
-                    })
-                  }
+                    });
+                  }}
                 >
                   Add to collection
                 </Button>
               </Card.Body>
             </Card>
           )}
+
+          {/* image modal */}
+          {isOpen &&
+            dogCollection.map((dog, index) => {
+              if (index === selectedCollectionIndex) {
+                return (
+                  <ImageModal
+                    key={index}
+                    src={dog.icon.props.children[1].props.src}
+                    alt={`dog ${index}`}
+                    caption={dogName}
+                    handleCloseSave={handleCloseSave}
+                    onClose={() => setIsOpen(false)}
+                    updateCollectionName={updateCollectionName}
+                  />
+                );
+              }
+            })}
         </div>
       </div>
     </>
