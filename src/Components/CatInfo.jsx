@@ -102,7 +102,7 @@ export function CatInfo({
         options={searchResults.map((breed) => ({ value: breed }))}
         onSelect={handleClick}
         onSearch={handleSearch}
-        placeholder="Search for dog breeds"
+        placeholder="Search for cat breeds"
       >
         <Input.Search enterButton />
       </AutoComplete>
