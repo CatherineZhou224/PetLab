@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import catBreeds from "../utils/catBreeds";
 import { getCatInfo } from "../utils/utils";
-import { List } from "antd";
+import { AutoComplete, Input, List } from "antd";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
@@ -19,6 +19,12 @@ export function CatInfo({
   const [catLength, setCatLength] = useState("");
   const [catOrigin, setCatOrigin] = useState("");
   const [message, setMessage] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = (value) => {
+    const filteredBreeds = catBreeds.filter((breed) => breed.startsWith(value));
+    setSearchResults(filteredBreeds);
+  };
 
   const handleClick = async (breed) => {
     try {
@@ -90,6 +96,17 @@ export function CatInfo({
     };
 
   return (
+    <>
+      <AutoComplete
+        style={{ width: 300, marginBottom: 20 }}
+        options={searchResults.map((breed) => ({ value: breed }))}
+        onSelect={handleClick}
+        onSearch={handleSearch}
+        placeholder="Search for dog breeds"
+      >
+        <Input.Search enterButton />
+      </AutoComplete>
+
     <div className="container">
       <List
         size="small"
@@ -189,5 +206,6 @@ export function CatInfo({
           })}
       </div>
     </div>
+  </>
   );
 }
