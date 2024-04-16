@@ -3,6 +3,7 @@ import { AutoComplete, Input, List } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
+import { BarChart } from '@mui/x-charts/BarChart';
 
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
@@ -14,10 +15,12 @@ export function DogInfo({
   updateCollectionName,
 }) {
   const [breeds, setBreeds] = useState([]);
-  // const [searchResults, setSearchResults] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
+  const [dogChildren, setDogChildren] = useState("");
+  const [dogOtherDog, setDogOtherDog] = useState("");
+  const [dogStranger, setDogStranger] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSearch = (value) => {
@@ -32,10 +35,16 @@ export function DogInfo({
         if (existingData === "empty") {
           setDogName("");
           setDogImage("");
+          setDogChildren("");
+          setDogOtherDog("");
+          setDogStranger("");
           setMessage("No data found for the specified dog.");
         } else {
           setDogName(existingData.name);
           setDogImage(existingData.image_link);
+          setDogChildren(existingData.good_with_children);
+          setDogOtherDog(existingData.good_with_other_dogs);
+          setDogStranger(existingData.good_with_strangers);
           setMessage("");
         }
       } else {
@@ -45,11 +54,17 @@ export function DogInfo({
           localStorage.setItem(breed, JSON.stringify(dog));
           setDogName(dog.name);
           setDogImage(dog.image_link);
+          setDogChildren(dog.good_with_children);
+          setDogOtherDog(dog.good_with_other_dogs);
+          setDogStranger(dog.good_with_strangers);
           setMessage("");
         } else {
           localStorage.setItem(breed, JSON.stringify("empty"));
           setDogName("");
           setDogImage("");
+          setDogChildren("");
+          setDogOtherDog("");
+          setDogStranger("");
           setMessage("No data found for the specified dog:(");
         }
       }
@@ -91,6 +106,7 @@ export function DogInfo({
     e.stopPropagation(); // Prevents List.Item onClick from being triggered
     removeDogCollection(dogName);
   };
+
 
   // hover effect
   // const [showPopup, setShowPopup] = useState(false);
@@ -188,7 +204,19 @@ export function DogInfo({
               />
               <Card.Body>
                 <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
-                <Card.Text>TBD</Card.Text>
+                <BarChart
+                  xAxis={[{ scaleType: 'band', data: ['Children', 'Other Dogs', 'Strangers'], label: 'Friendliness Level with Other Species' }]}
+                  series={[
+                    { name: 'Good with Children', data: [dogChildren, null, null] }, 
+                    { name: 'Good with Other Dogs', data: [null, dogOtherDog, null] }, 
+                    { name: 'Good with Strangers', data: [null, null, dogStranger] }
+                  ]}
+                  width={400}
+                  height={300}
+                />
+
+
+
 
                 {/* {showPopup && (
                   <div
@@ -203,6 +231,7 @@ export function DogInfo({
                     Click me!
                   </div>
                 )} */}
+
 
                 <Button
                   onClick={handleShow}
