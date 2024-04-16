@@ -107,37 +107,6 @@ export function DogInfo({
     removeDogCollection(dogName);
   };
 
-
-  // hover effect
-  // const [showPopup, setShowPopup] = useState(false);
-  // const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  // const handleMouseMove = (event) => {
-  //   const cursorX = event.clientX,
-  //     cursorY = event.clientY;
-  //   const itemLeft = event.target.getBoundingClientRect().left,
-  //     itemTop = event.target.getBoundingClientRect().top;
-
-  //   const positionX = cursorX - itemLeft,
-  //     positionY = cursorY - itemTop - window.scrollY;
-
-  //   setPosition({
-  //     x: positionX,
-  //     y: positionY,
-  //   });
-  // };
-
-  // const handleMouseEnter = (event) => {
-  //   event.preventDefault();
-  //   setShowPopup(true);
-  //   console.log("showPopup", showPopup);
-  //   console.log("position", position);
-  // };
-
-  // const handleMouseLeave = () => {
-  //   setShowPopup(false);
-  // };
-
   //image modal
   const [selectedCollectionIndex, setSelectedCollectionIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -214,25 +183,7 @@ export function DogInfo({
                   width={400}
                   height={300}
                 />
-
-
-
-
-                {/* {showPopup && (
-                  <div
-                    className="popup"
-                    style={{
-                      position: "absolute",
-                      left: `${position.x + 150}px`,
-                      top: `${position.y + 250}px`,
-                      // pointerEvents: 'none',
-                    }}
-                  >
-                    Click me!
-                  </div>
-                )} */}
-
-
+                
                 <Button
                   onClick={handleShow}
                   variant="secondary"
