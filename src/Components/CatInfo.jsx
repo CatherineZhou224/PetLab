@@ -1,38 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import catBreeds from "../utils/catBreeds";
 import { getCatInfo } from "../utils/utils";
-import { useEffect, useState } from "react";
 import { List } from "antd";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
-import { Button } from "react-bootstrap";
+import ImageModal from "./ImageModal";
+import NameCustomizeModal from "./NameCustomizeModal";
 
-export function CatInfo({ addToCatCollection, removeCatCollection, handleSelectCat}) {
+export function CatInfo({
+  addToCatCollection,
+  removeCatCollection,
+  catCollection,
+  updateCollectionName,
+}) {
   const [catImage, setCatImage] = useState("");
   const [catName, setCatName] = useState("");
   const [catLength, setCatLength] = useState("");
   const [catOrigin, setCatOrigin] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleClick = async (item) => {
+  const handleClick = async (breed) => {
     try {
-      const data = await getCatInfo(item);
-      if (data.length > 0) {
-        const cat = data[0];
-        setCatName(cat.name);
-        setCatLength(cat.length);
-        setCatOrigin(cat.origin);
-        setCatImage(cat.image_link);
-        // Log or handle other properties as needed
+      const existingData = JSON.parse(localStorage.getItem(breed));
+      if (existingData) {
+        setCatName(existingData.name);
+        setCatLength(existingData.length);
+        setCatOrigin(existingData.origin);
+        setCatImage(existingData.image_link);
+        setMessage("");
       } else {
-        console.log("No data found for the specified cat.");
+        const data = await getCatInfo(breed);
+        if (data.length > 0) {
+          const cat = data[0];
+          localStorage.setItem(breed, JSON.stringify(cat));
+          setCatName(cat.name);
+          setCatLength(cat.length);
+          setCatOrigin(cat.origin);
+          setCatImage(cat.image_link);
+          setMessage("");
+          // Log or handle other properties as needed
+        } else {
+          setCatName("");
+          setCatImage("");
+          setMessage("No data found for the specified cat.");
+        }
       }
     } catch (error) {
       console.error("Error fetching cat information:", error);
+      setMessage("Error fetching cat information. Please try again later.");
       // Handle errors, such as network errors or server errors
     }
   };
 
   useEffect(() => {
-    handleClick("Abyssinia");
+    handleClick("Abyssinian");
   }, []);
 
   const handleRemoveClick = (e, catName) => {
@@ -41,6 +63,31 @@ export function CatInfo({ addToCatCollection, removeCatCollection, handleSelectC
   };
 
 
+    //image modal
+    const [selectedCollectionIndex, setSelectedCollectionIndex] = useState(0);
+    const [isOpen, setIsOpen] = useState(false);
+    const showModal = (e) => {
+      e.stopPropagation(); // Stop the event from bubbling up further
+      const index = e.currentTarget.alt.split(" ")[1];
+  
+      if (index !== undefined) {
+        setIsOpen(true);
+        setSelectedCollectionIndex(parseInt(index, 10)); // Parse the index to ensure it's a number
+        console.log("Selected Collection Index:", index);
+      } else {
+        console.error("Invalid index extracted from alt attribute");
+      }
+    };
+
+    // Function to handle selecting a pet from the collection and give it a name
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+  
+    const handleClose = () => setShow(false);
+    const handleCloseSave = (petNameInput) => {
+      setShow(false);
+      setCatName(petNameInput);
+    };
 
   return (
     <div className="container">
@@ -48,39 +95,99 @@ export function CatInfo({ addToCatCollection, removeCatCollection, handleSelectC
         size="small"
         bordered
         dataSource={catBreeds}
-        renderItem={(item) => (
-          <List.Item onClick={() => handleClick(item)}>{item}</List.Item>
+        renderItem={(breed, key) => (
+          <List.Item onClick={() => handleClick(breed)} key={key}>
+            {breed}
+          </List.Item>
         )}
         style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
       />
       <div>
-        {catName && <p>Name: {catName}</p>}
-        {catOrigin && <p>Origin: {catOrigin}</p>}
-        {catLength && <p>Length: {catLength}</p>}
-        {catImage && <img className="image" src={catImage} />}
-      </div>
+        {!catImage && message && <h3>{message}</h3>}
+        {catImage && !message && (
+          <Card style={{ width: "25rem" }}>
+            <Card.Img
+              variant="top"
+              src={catImage}
+              style={{
+                width: "100%",
+                height: "300px",
+                objectFit: "cover",
+              }}
+            />
+            <Card.Body>
+              <Card.Title>{catName && `Name: ${catName}`}</Card.Title>
+              <Card.Text>
+                {catOrigin && `Origin: ${catOrigin}`}
+                <br />
+                {catLength && `Length: ${catLength}`}
+              </Card.Text>
 
-      <Button 
-        variant="primary"
-        onClick={() => addToCatCollection(
-          { key: catName, 
-            icon: <span
-                    onClick={() => handleSelectCat(cat)}
-                  >
-                    <span 
-                      className="remove-button"
-                      onClick={(e) => handleRemoveClick(e, catName)}
-                    >
-                      ❌
-                    </span>
-                    <img src={catImage} alt={catName} style={{ width: '30px', height: '30px' }} />
-                  </span>,
-            label: catName,
+              <Button
+                  onClick={handleShow}
+                  variant="secondary"
+                  style={{ marginRight: "10px" }}
+                >
+                  Name your cat
+                </Button>
 
+              <NameCustomizeModal
+                  show={show}
+                  handleClose={handleClose}
+                  handleCloseSave={handleCloseSave}
+                />
+
+
+              <Button
+                variant="primary"
+                onClick={() =>
+                  addToCatCollection({
+                    key: `cat ${catCollection.length}`,
+                    icon: (
+                      <span>
+                        <span
+                          className="remove-button"
+                          onClick={(e) => handleRemoveClick(e, catName)}
+                        >
+                          ❌
+                        </span>
+                        <img
+                          onClick={(e) => showModal(e)}
+                          className="image"
+                          src={catImage}
+                          alt={`cat ${catCollection.length}`}
+                          style={{ width: "30px", height: "30px" }}
+                        />
+                      </span>
+                    ),
+                    label: catName,
+                  })
+                }
+              >
+                Add to collection
+              </Button>
+            </Card.Body>
+          </Card>
+        )}
+
+        {/* image modal */}
+        {isOpen &&
+          catCollection.map((cat, index) => {
+            if (index === selectedCollectionIndex) {
+              return (
+                <ImageModal
+                  key={index}
+                  src={cat.icon.props.children[1].props.src}
+                  alt={`cat ${index}`}
+                  caption={catName}
+                  handleCloseSave={handleCloseSave}
+                  onClose={() => setIsOpen(false)}
+                  updateCollectionName={updateCollectionName}
+                />
+              );
+            }
           })}
-      >
-        Add to collection
-      </Button>
+      </div>
     </div>
   );
 }

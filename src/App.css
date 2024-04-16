@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 .ant-tabs-content-holder {
   background-color: white;
@@ -20,17 +20,18 @@
   overflow: scroll;
 }
 
-.ant-list-item{
+.ant-list-item {
   cursor: pointer;
 }
 
-.ant-list-item:hover{
-  background-color: #58554F;
-  color:white;
+.ant-list-item:hover {
+  background-color: #58554f;
+  color: white;
 }
 
 .container {
   display: flex;
+  align-content: flex-start;
 }
 
 .image {
@@ -40,38 +41,34 @@
 }
 
 /* loading page css */
-.custom-body{
-  background: url('./src/assets/view-adorable-3d-cat.png') ;
-  background-color: lightgray; 
-  background-position: center; 
-  background-size: cover; 
-  background-repeat: no-repeat; 
+.custom-body {
+  background: url("./src/assets/background2.png");
+  background-color: #65c5c0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   margin: 0;
-  padding: 0; 
-  font-family: 'Poppins', sans-serif;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
 }
 
-
-
-.custom-progress div{
+.custom-progress div {
   justify-content: flex-end;
   flex-direction: row;
   overflow: visible;
   border-radius: var(--bs-progress-border-radius);
-  background-color: #E59675;
+  background-color: #e59675;
 }
 
-.custom-progress{
+.custom-progress {
   overflow: visible;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-
-
 .custom-progress div::after {
-  content: '';
+  content: "";
   display: block;
-  background: url('./src/assets/navigation-icon.png') no-repeat center center;
+  background: url("./src/assets/navigation-icon.png") no-repeat center center;
   background-size: contain; /* This will make sure your image is scaled to fit within the element */
   margin-right: -35px;
   margin-top: -25px;
@@ -80,50 +77,43 @@
   transform: rotate(29.049deg);
 }
 
-#root .progress{
+#root .progress {
   overflow: visible;
 }
 
-.loading-text{
+.loading-text {
   font-size: 1.5em;
   font-weight: bold;
-  color: #FFF6E5;
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translateX(-50%);
+  color: white;
+  text-align: center;
+  margin: 14% 0 25px 0;
 }
 
-.loading-num{
+.loading-num {
   font-size: 1.5em;
   font-weight: bold;
-  color: #FFF6E5;
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translateX(-50%);
+  color: white;
+  margin-top: 20px;
+  text-align: center;
   font-family: "Poppins", sans-serif;
   font-size: 70px;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.pet-lab-title{
-  color: #FFF;
+.pet-lab-title {
+  color: #fff;
   text-align: center;
   font-family: "Poppins", sans-serif;
   font-size: 100px;
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: 120px;
   text-transform: uppercase;
-  position: absolute;
-  top:5%;
-  left: 50%;
-  transform: translateX(-50%);
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.pet-lab-subtitle{
-  color: #58554F;
+.pet-lab-subtitle {
+  color: white;
   text-align: center;
   font-family: "Poppins", sans-serif;
   font-size: 28px;
@@ -132,9 +122,21 @@
   line-height: normal;
   position: absolute;
   width: 100%;
-  top: 23%;
-  left: 50%;
-  transform: translateX(-50%);
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.pet-lab-welcome {
+  color: white;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding-top: 5%;
+  margin: 0;
 }
 
 .loading-content {
@@ -155,16 +157,127 @@
   justify-content: space-around;
 } */
 
-#root .ant-menu ul{
+#root .ant-menu ul {
   width: 100%;
   justify-content: space-around;
 }
 
-#root .ant-menu > li > span.ant-menu-item-icon{
+#root .ant-menu > li > span.ant-menu-item-icon {
   width: 40%;
   justify-content: space-around;
 }
 
 .ant-menu-item {
   padding-left: 20px !important;
+}
+
+
+
+.popup {
+  z-index: 100;
+  background-color:  #509f91;
+  color:white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.card:hover {
+  box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.2);
+  transition: 0.2s;
+}
+
+
+
+.image {
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
+/* The Modal (background) */
+.image-modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (image) */
+.image-modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+/* Caption of Modal Image */
+.caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  font-size: 30px;
+}
+
+/* Add Animation */
+.image-modal-content,
+.caption {
+  -webkit-animation-name: zoom;
+  -webkit-animation-duration: 0.6s;
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+  from {
+    -webkit-transform: scale(0);
+  }
+  to {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* The Close Button */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px) {
+  .image-modal-content {
+    width: 100%;
+  }
 }
