@@ -3,7 +3,7 @@ import { AutoComplete, Input, List } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart } from "@mui/x-charts/BarChart";
 
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
@@ -174,11 +174,17 @@ export function DogInfo({
               <Card.Body>
                 <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
                 <BarChart
-                  xAxis={[{ scaleType: 'band', data: ['Children', 'Other Dogs', 'Strangers'], label: 'Friendliness Level with Other Species' }]}
+                  xAxis={[
+                    {
+                      scaleType: "band",
+                      data: ["Children", "Other Dogs", "Strangers"],
+                      label: "Friendliness Level with Other Species",
+                    },
+                  ]}
                   series={[
-                    { name: 'Good with Children', data: [dogChildren, null, null] }, 
-                    { name: 'Good with Other Dogs', data: [null, dogOtherDog, null] }, 
-                    { name: 'Good with Strangers', data: [null, null, dogStranger] }
+                    {
+                      data: [dogChildren, dogOtherDog, dogStranger],
+                    },
                   ]}
                   width={400}
                   height={300}
