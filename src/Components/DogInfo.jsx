@@ -30,7 +30,7 @@ export function DogInfo({
   const [message, setMessage] = useState("");
 
   const [customNames, setCustomNames] = useState(() => {
-    const storedCustomNames = localStorage.getItem("customNames");
+    const storedCustomNames = localStorage.getItem("customNames.dogs");
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
 
@@ -147,7 +147,7 @@ export function DogInfo({
         [breed]: petNameInput,
       })
     );
-
+    updateCollectionName(petNameInput, breed);
     console.log("Custom dog names:", customNames);
   };
 

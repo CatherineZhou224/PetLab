@@ -29,7 +29,7 @@ export function CatInfo({
   const [searchResults, setSearchResults] = useState([]);
 
   const [customNames, setCustomNames] = useState(() => {
-    const storedCustomNames = localStorage.getItem("customNames");
+    const storedCustomNames = localStorage.getItem("customNames.cats");
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
 
@@ -123,7 +123,8 @@ export function CatInfo({
          [breed]: petNameInput,
        })
      );
- 
+     
+     updateCollectionName(petNameInput, breed);
      console.log("Custom cat names:", customNames);
    };
 
