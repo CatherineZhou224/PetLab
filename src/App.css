@@ -166,7 +166,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   color:#386161;
 }
 
-:where(.css-dev-only-do-not-override-1kuana8).ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+#root .ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: #43a092;
 }
 
@@ -257,12 +257,12 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 /* sider color */
 
 /* sider item */
-:where(.css-dev-only-do-not-override-1kuana8).ant-menu-dark.ant-menu-inline .ant-menu-sub.ant-menu-inline, :where(.css-dev-only-do-not-override-1kuana8).ant-menu-dark>.ant-menu.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+#root .ant-menu-dark.ant-menu-inline .ant-menu-sub.ant-menu-inline, #root .ant-menu-dark>.ant-menu.ant-menu-inline .ant-menu-sub.ant-menu-inline {
   background-color: #3e7a79;
 }
 
 /* sider subtitle */
-:where(.css-dev-only-do-not-override-1kuana8).ant-menu-dark, :where(.css-dev-only-do-not-override-1kuana8).ant-menu-dark>.ant-menu {
+#root .ant-menu-dark, #root .ant-menu-dark>.ant-menu {
   background-color: #179e9b;
   font-size: 1.1em;
 }
@@ -272,7 +272,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 }
 
 /* sider background */
-:where(.css-dev-only-do-not-override-1kuana8).ant-layout .ant-layout-sider {
+#root .ant-layout .ant-layout-sider {
   background: rgba(32, 77, 76, 0.71);
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   border-radius: 10px;
