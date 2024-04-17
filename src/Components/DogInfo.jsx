@@ -22,19 +22,22 @@ export function DogInfo({
   const [searchResults, setSearchResults] = useState([]);
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
+  const [dogHeight, setDogHeight] = useState("");
+  const [dogWeight, setDogWeight] = useState("");
   const [dogChildren, setDogChildren] = useState("");
   const [dogOtherDog, setDogOtherDog] = useState("");
   const [dogStranger, setDogStranger] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSearch = (value) => {
-    const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
-    setSearchResults(filteredBreeds);
-  };
   const [customNames, setCustomNames] = useState(() => {
     const storedCustomNames = localStorage.getItem("customNames");
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
+
+  const handleSearch = (value) => {
+    const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
+    setSearchResults(filteredBreeds);
+  };
 
   const handleSelect = async (breed) => {
     try {
@@ -43,6 +46,8 @@ export function DogInfo({
         if (existingData === "empty") {
           setDogBreed("");
           setDogName("");
+          setDogHeight("");
+          setDogWeight("");
           setDogImage("");
           setDogChildren("");
           setDogOtherDog("");
@@ -53,6 +58,8 @@ export function DogInfo({
           const customName = customNames[breed];
           setDogName(customName || existingData.name);
           setDogImage(existingData.image_link);
+          setDogHeight(existingData.min_height_female);
+          setDogWeight(existingData.min_weight_female);
           setDogChildren(existingData.good_with_children);
           setDogOtherDog(existingData.good_with_other_dogs);
           setDogStranger(existingData.good_with_strangers);
@@ -66,6 +73,8 @@ export function DogInfo({
           setDogBreed(breed);
           const customName = customNames[breed];
           setDogName(customName || dog.name);
+          setDogHeight(dog.min_height_female);
+          setDogWeight(dog.min_weight_female);
           setDogImage(dog.image_link);
           setDogChildren(dog.good_with_children);
           setDogOtherDog(dog.good_with_other_dogs);
@@ -75,6 +84,8 @@ export function DogInfo({
           localStorage.setItem(breed, JSON.stringify("empty"));
           setDogBreed("");
           setDogName("");
+          setDogHeight("");
+          setDogWeight("");
           setDogImage("");
           setDogChildren("");
           setDogOtherDog("");
@@ -130,20 +141,20 @@ export function DogInfo({
     }));
 
     localStorage.setItem(
-      "customNames",
+      "customNames.dogs",
       JSON.stringify({
         ...customNames,
         [breed]: petNameInput,
       })
     );
 
-    console.log("Custom names:", customNames);
+    console.log("Custom dog names:", customNames);
   };
 
   return (
     <>
       <AutoComplete
-        style={{ width: 300, marginBottom: 20 }}
+        style={{ width: 300, marginBottom: 0 }}
         options={searchResults.map((breed) => ({ value: breed }))}
         onSelect={handleSelect}
         onSearch={handleSearch}
@@ -151,6 +162,8 @@ export function DogInfo({
       >
         <Input.Search enterButton />
       </AutoComplete>
+
+      <div className="breed-header">{dogBreed}</div>
 
       <div className="container">
         <List
@@ -166,20 +179,16 @@ export function DogInfo({
         />
 
         <div>
-          {!dogImage && message && <h3>{message}</h3>}
+          {!dogImage && message && <h3 className="alert-message">{message}</h3>}
           {dogImage && !message && (
-            <Card
-              style={{
-                width: "25rem",
-              }}
-            >
+            <Card style={{ width: "95%" }}>
               <Card.Img
                 variant="top"
                 src={dogImage}
                 alt={dogBreed}
                 style={{
                   width: "100%",
-                  height: "300px",
+                  height: "500px",
                   objectFit: "cover",
                 }}
               />
@@ -191,6 +200,27 @@ export function DogInfo({
                       customNames[dogBreed] || "Give your pet a name;))"
                     }`}
                 </Card.Title>
+                <Card.Text>
+                  {dogWeight && `Weight: ${dogWeight} pounds`}
+                  <br />
+                  {dogHeight && `Height: ${dogHeight} inches`}
+                </Card.Text>
+                <BarChart
+                  xAxis={[
+                    {
+                      scaleType: "band",
+                      data: ["with Children", "with Dogs", "with Strangers"],
+                      label: "Friendliness Level",
+                    },
+                  ]}
+                  series={[
+                    {
+                      data: [dogChildren, dogOtherDog, dogStranger],
+                    },
+                  ]}
+                  width={400}
+                  height={250}
+                />
 
                 <Button
                   onClick={handleShow}
@@ -222,6 +252,7 @@ export function DogInfo({
               </Card.Body>
             </Card>
           )}
+
           {/* image modal */}
           {isOpen &&
             dogCollection.map((dog, index) => {
@@ -242,22 +273,6 @@ export function DogInfo({
               }
             })}
         </div>
-        <BarChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: ["Children", "Other Dogs", "Strangers"],
-              label: "Friendliness Level with Other Species",
-            },
-          ]}
-          series={[
-            {
-              data: [dogChildren, dogOtherDog, dogStranger],
-            },
-          ]}
-          width={400}
-          height={300}
-        />
       </div>
     </>
   );

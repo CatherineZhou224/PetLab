@@ -8,9 +8,6 @@ import { CatInfo } from "./CatInfo";
 import DogIcon from "./DogIcon";
 import CatIcon from "./CatIcon";
 
-import ImageModal from "./ImageModal";
-import NameCustomizeModal from "./NameCustomizeModal";
-
 const { Header, Sider } = Layout;
 const MainContent = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -32,14 +29,17 @@ const MainContent = () => {
     return storedDogs ? JSON.parse(storedDogs) : [];
   });
 
-  const [catCollection, setCatCollection] = useState([]);
+  const [catCollection, setCatCollection] = useState(() => {
+    const storedCats = localStorage.getItem("catCollection");
+    return storedCats ? JSON.parse(storedCats) : [];
+  });
 
   // Handlers for adding to collections
   const addToDogCollection = (dog) => {
     if (dogCollection.some((d) => d.key === dog.key)) {
-      alert("This dog is already in the collection.");
-      return;
+      return alert("This dog is already in the collection.");
     }
+
     const newDog = {
       key: dog.key,
       imageUrl: dog.icon,
@@ -62,7 +62,7 @@ const MainContent = () => {
     }
 
     const newCat = {
-      key: `cat ${catCollection.length}`,
+      key: cat.key,
       imageUrl: cat.icon,
       label: cat.label,
     };
@@ -74,18 +74,18 @@ const MainContent = () => {
     });
   };
 
-  const removeCatCollection = (catName) => {
-    setCatCollection((prev) => {
-      const updatedCollection = prev.filter((cat) => cat.label !== catName);
-      localStorage.setItem("catCollection", JSON.stringify(updatedCollection));
-      return updatedCollection;
-    });
-  };
-
   const removeDogCollection = (dogName) => {
     setDogCollection((prev) => {
       const updatedCollection = prev.filter((dog) => dog.label !== dogName);
       localStorage.setItem("dogCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
+  };
+
+  const removeCatCollection = (catName) => {
+    setCatCollection((prev) => {
+      const updatedCollection = prev.filter((cat) => cat.label !== catName);
+      localStorage.setItem("catCollection", JSON.stringify(updatedCollection));
       return updatedCollection;
     });
   };
@@ -102,25 +102,26 @@ const MainContent = () => {
       return updatedCollection;
     });
 
-    setCatCollection((prev) =>
-      prev.map((cat) => {
-        if (cat.key === alt) {
+    setCatCollection((prev) => {
+      const updatedCollection = prev.map((cat) => {
+        if (cat.key === breed) {
           return { ...cat, label: newName };
         }
         return cat;
-      })
-    );
-    localStorage.setItem("catCollection", JSON.stringify(catCollection));
+      });
+      localStorage.setItem("catCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
   };
 
   //image modal
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCollectionDog, setSelectedCollectionDog] = useState({});
+  const [selectedCollectionPet, setSelectedCollectionPet] = useState({});
 
-  const showModal = (e, dog) => {
+  const showModal = (e, pet) => {
     e.stopPropagation();
-    console.log("Opening modal for dog:", dog);
-    setSelectedCollectionDog(dog);
+    console.log("Opening modal for pet:", pet);
+    setSelectedCollectionPet(pet);
     setIsOpen(true);
     console.log("Modal open state:", isOpen);
   };
@@ -153,7 +154,23 @@ const MainContent = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sider */}
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider 
+        trigger={null} 
+        collapsible 
+        collapsed={collapsed}
+      >
+        <div className="nav-btn-container">
+          <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+              }}
+            />
+        </div>
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
@@ -212,7 +229,47 @@ const MainContent = () => {
               key: "2",
               icon: <CatIcon fill="white" />,
               label: "Cat Collection",
-              children: catCollection,
+              children: catCollection.map((cat, index) => ({
+                key: cat.key,
+                icon: (
+                  <span>
+                    <span
+                      className="remove-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeCatCollection(cat.label);
+                      }}
+                    >
+                      ❌
+                    </span>
+                    <img
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showModal(e, cat);
+                        console.log("is open?", isOpen);
+                      }}
+                      className="image"
+                      src={cat.imageUrl}
+                      alt={cat.key}
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </span>
+                ),
+                label: (
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showModal(e, cat);
+                      console.log("is open?", isOpen);
+                    }}
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    {cat.label}
+                  </div>
+                ),
+              })),
             },
           ]}
         />
@@ -228,17 +285,10 @@ const MainContent = () => {
             background: colorBgContainer,
           }}
         >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
-          />
-          <Title level={2} style={{ margin: 0 }}>
+          <Title 
+          className="content-page-title"
+          level={2} 
+          style={{ margin: 0 }}>
             Pet Lab
           </Title>
         </Header>
@@ -264,7 +314,7 @@ const MainContent = () => {
               updateCollectionName={updateCollectionName}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
-              selectedCollectionDog={selectedCollectionDog}
+              selectedCollectionDog={selectedCollectionPet}
             />
           </TabPane>
           <TabPane
@@ -283,6 +333,7 @@ const MainContent = () => {
               updateCollectionName={updateCollectionName}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
+              selectedCollectionCat={selectedCollectionPet}
             />
           </TabPane>
         </Tabs>
