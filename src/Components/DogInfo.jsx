@@ -273,22 +273,6 @@ export function DogInfo({
               }
             })}
         </div>
-        <BarChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: ["Children", "Other Dogs", "Strangers"],
-              label: "Friendliness Level with Other Species",
-            },
-          ]}
-          series={[
-            {
-              data: [dogChildren, dogOtherDog, dogStranger],
-            },
-          ]}
-          width={400}
-          height={300}
-        />
       </div>
     </>
   );

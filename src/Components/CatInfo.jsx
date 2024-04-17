@@ -246,22 +246,6 @@ export function CatInfo({
               }
             })}
         </div>
-        <BarChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: ["Children", "Other Pets", "Family"],
-              label: "Friendliness Level with Other Species",
-            },
-          ]}
-          series={[
-            {
-              data: [catChildren, catOtherPets, catFamily],
-            },
-          ]}
-          width={400}
-          height={300}
-        />
       </div>
     </>
   );
