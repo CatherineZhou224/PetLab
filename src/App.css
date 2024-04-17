@@ -306,7 +306,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 
 /* loading page css */
 .custom-body {
-  background: url("./src/assets/background2.png");
+  background: url("./assets/background2.png");
   background-color: #65c5c0;
   background-position: center;
   background-size: cover;
@@ -332,7 +332,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 .custom-progress div::after {
   content: "";
   display: block;
-  background: url("./src/assets/navigation-icon.png") no-repeat center center;
+  background: url("./assets/navigation-icon.png") no-repeat center center;
   background-size: contain; /* This will make sure your image is scaled to fit within the element */
   margin-right: -35px;
   margin-top: -25px;
@@ -451,7 +451,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 #root .content-page-title::before{
   content: "";
   display: block;
-  background: url("./src/assets/paw-no-shadow.png") no-repeat center center;
+  background: url("./assets/paw-no-shadow.png") no-repeat center center;
   background-size: contain;
   display: inline-block;
   margin-right: 10px;
