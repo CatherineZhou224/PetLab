@@ -3,7 +3,7 @@ import { AutoComplete, Input, List } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart } from "@mui/x-charts/BarChart";
 
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
@@ -122,7 +122,6 @@ export function DogInfo({
     handleSelect("affenpinscher");
   }, []);
 
-
   // Function to change the name of the pet on the card
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -192,19 +191,21 @@ export function DogInfo({
                 <Card.Title>{dogBreed && `Breed: ${dogBreed}`}</Card.Title>
                 <Card.Title>{dogName && `Name: ${customNames[dogBreed] || "Give your pet a name;))"}`}</Card.Title>
                 <BarChart
-                  xAxis={[{ scaleType: 'band', data: ['Children', 'Other Dogs', 'Strangers'], label: 'Friendliness Level with Other Species' }]}
+                  xAxis={[
+                    {
+                      scaleType: "band",
+                      data: ["Children", "Other Dogs", "Strangers"],
+                      label: "Friendliness Level with Other Species",
+                    },
+                  ]}
                   series={[
-                    { name: 'Good with Children', data: [dogChildren, null, null] }, 
-                    { name: 'Good with Other Dogs', data: [null, dogOtherDog, null] }, 
-                    { name: 'Good with Strangers', data: [null, null, dogStranger] }
+                    {
+                      data: [dogChildren, dogOtherDog, dogStranger],
+                    },
                   ]}
                   width={400}
                   height={300}
                 />
-
-
-
-
 
                 <Button
                   onClick={handleShow}
