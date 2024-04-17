@@ -11,10 +11,13 @@ import NameCustomizeModal from "./NameCustomizeModal";
 
 export function CatInfo({
   addToCatCollection,
-  removeCatCollection,
   catCollection,
   updateCollectionName,
+  isOpen,
+  setIsOpen,
+  selectedCollectionCat,
 }) {
+  const [catBreed, setCatBreed] = useState("");
   const [catImage, setCatImage] = useState("");
   const [catName, setCatName] = useState("");
   const [catLength, setCatLength] = useState("");
@@ -24,6 +27,11 @@ export function CatInfo({
   const [catFamily, setCatFamily] = useState("");
   const [message, setMessage] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
+  const [customNames, setCustomNames] = useState(() => {
+    const storedCustomNames = localStorage.getItem("customNames");
+    return storedCustomNames ? JSON.parse(storedCustomNames) : {};
+  });
 
   const handleSearch = (value) => {
     const filteredBreeds = catBreeds.filter((breed) => breed.startsWith(value));
@@ -35,6 +43,7 @@ export function CatInfo({
       const existingData = JSON.parse(localStorage.getItem(breed));
       if (existingData) {
         if (existingData === "empty") {
+          setCatBreed("");
           setCatName("");
           setCatLength("");
           setCatOrigin("");
@@ -44,7 +53,9 @@ export function CatInfo({
           setCatFamily("");
           setMessage("No data found for the specified cat.");
         } else {
-          setCatName(existingData.name);
+          setCatBreed(breed);
+          const customName = customNames[breed];
+          setCatName(customName || existingData.name);
           setCatLength(existingData.length);
           setCatOrigin(existingData.origin);
           setCatImage(existingData.image_link);
@@ -58,7 +69,9 @@ export function CatInfo({
         if (data.length > 0) {
           const cat = data[0];
           localStorage.setItem(breed, JSON.stringify(cat));
-          setCatName(cat.name);
+          setCatBreed(breed);
+          const customName = customNames[breed];
+          setCatName(customName || cat.name);
           setCatLength(cat.length);
           setCatOrigin(cat.origin);
           setCatImage(cat.image_link);
@@ -68,6 +81,7 @@ export function CatInfo({
           setMessage("");
         } else {
           localStorage.setItem(breed, JSON.stringify("empty"));
+          setCatBreed("");
           setCatName("");
           setCatLength("");
           setCatOrigin("");
@@ -88,41 +102,36 @@ export function CatInfo({
     handleClick("Abyssinian");
   }, []);
 
-  const handleRemoveClick = (e, catName) => {
-    e.stopPropagation(); // Prevents List.Item onClick from being triggered
-    removeCatCollection(catName);
-  };
 
-  //image modal
-  const [selectedCollectionIndex, setSelectedCollectionIndex] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
-  const showModal = (e) => {
-    e.stopPropagation(); // Stop the event from bubbling up further
-    const index = e.currentTarget.alt.split(" ")[1];
+   // Function to change the name of the pet on the card
+   const [show, setShow] = useState(false);
+   const handleShow = () => setShow(true);
+ 
+   const handleClose = () => setShow(false);
+   const handleCloseSave = (petNameInput, breed) => {
+     setShow(false);
+     setCatName(petNameInput);
+     setCustomNames((prev) => ({
+       ...prev,
+       [breed]: petNameInput,
+     }));
+ 
+     localStorage.setItem(
+       "customNames.cats",
+       JSON.stringify({
+         ...customNames,
+         [breed]: petNameInput,
+       })
+     );
+ 
+     console.log("Custom cat names:", customNames);
+   };
 
-    if (index !== undefined) {
-      setIsOpen(true);
-      setSelectedCollectionIndex(parseInt(index, 10)); // Parse the index to ensure it's a number
-      console.log("Selected Collection Index:", index);
-    } else {
-      console.error("Invalid index extracted from alt attribute");
-    }
-  };
-
-  // Function to handle selecting a pet from the collection and give it a name
-  const [show, setShow] = useState(false);
-  const handleShow = () => setShow(true);
-
-  const handleClose = () => setShow(false);
-  const handleCloseSave = (petNameInput) => {
-    setShow(false);
-    setCatName(petNameInput);
-  };
 
   return (
     <>
       <AutoComplete
-        style={{ width: 300, marginBottom: 20 }}
+        style={{ width: 300, marginBottom: 0 }}
         options={searchResults.map((breed) => ({ value: breed }))}
         onSelect={handleClick}
         onSearch={handleSearch}
@@ -144,20 +153,27 @@ export function CatInfo({
           style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
         />
         <div>
-          {!catImage && message && <h3>{message}</h3>}
+          {!catImage && message && <h3 className="alert-message">{message}</h3>}
           {catImage && !message && (
-            <Card style={{ width: "25rem" }}>
+            <Card style={{ width: "95%" }}>
               <Card.Img
                 variant="top"
                 src={catImage}
+                alt={catBreed}
                 style={{
                   width: "100%",
-                  height: "300px",
+                  height: "500px",
                   objectFit: "cover",
                 }}
               />
               <Card.Body>
-                <Card.Title>{catName && `Name: ${catName}`}</Card.Title>
+              <Card.Title>{catBreed && `Breed: ${catBreed}`}</Card.Title>
+                <Card.Title>
+                  {catName &&
+                    `Name: ${
+                      customNames[catBreed] || "Give your pet a name;))"
+                    }`}
+                </Card.Title>
                 <Card.Text>
                   {catOrigin && `Origin: ${catOrigin}`}
                   <br />
@@ -167,8 +183,8 @@ export function CatInfo({
                   xAxis={[
                     {
                       scaleType: "band",
-                      data: ["Children", "Other Pets", "Family"],
-                      label: "Friendliness Level with Other Species",
+                      data: ["with Children", "with Dogs", "with Strangers"],
+                      label: "Friendliness Level",
                     },
                   ]}
                   series={[
@@ -177,7 +193,7 @@ export function CatInfo({
                     },
                   ]}
                   width={400}
-                  height={300}
+                  height={250}
                 />
                 <Button
                   onClick={handleShow}
@@ -191,30 +207,15 @@ export function CatInfo({
                   show={show}
                   handleClose={handleClose}
                   handleCloseSave={handleCloseSave}
+                  breed={catBreed}
                 />
 
                 <Button
                   variant="primary"
                   onClick={() =>
                     addToCatCollection({
-                      key: `cat ${catCollection.length}`,
-                      icon: (
-                        <span>
-                          <span
-                            className="remove-button"
-                            onClick={(e) => handleRemoveClick(e, catName)}
-                          >
-                            ❌
-                          </span>
-                          <img
-                            onClick={(e) => showModal(e)}
-                            className="image"
-                            src={catImage}
-                            alt={`cat ${catCollection.length}`}
-                            style={{ width: "30px", height: "30px" }}
-                          />
-                        </span>
-                      ),
+                      key: catBreed,
+                      icon: catImage,
                       label: catName,
                     })
                   }
@@ -228,13 +229,15 @@ export function CatInfo({
           {/* image modal */}
           {isOpen &&
             catCollection.map((cat, index) => {
-              if (index === selectedCollectionIndex) {
+              console.log("selectedCollectionCat", selectedCollectionCat);
+              console.log("what cat", cat);
+              if (cat.key === selectedCollectionCat.key) {
                 return (
                   <ImageModal
-                    key={index}
-                    src={cat.icon.props.children[1].props.src}
-                    alt={`cat ${index}`}
-                    caption={catName}
+                    key={cat.key}
+                    src={cat.imageUrl}
+                    alt={cat.key}
+                    caption={cat.label}
                     handleCloseSave={handleCloseSave}
                     onClose={() => setIsOpen(false)}
                     updateCollectionName={updateCollectionName}
