@@ -7,6 +7,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
+import { display } from "@mui/system";
 
 export function DogInfo({
   addToDogCollection,
@@ -34,7 +35,6 @@ export function DogInfo({
     const storedCustomNames = localStorage.getItem("customNames");
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
-
 
   const handleSelect = async (breed) => {
     try {
@@ -140,8 +140,6 @@ export function DogInfo({
     console.log("Custom names:", customNames);
   };
 
-
-
   return (
     <>
       <AutoComplete
@@ -170,7 +168,11 @@ export function DogInfo({
         <div>
           {!dogImage && message && <h3>{message}</h3>}
           {dogImage && !message && (
-            <Card style={{ width: "25rem" }}>
+            <Card
+              style={{
+                width: "25rem",
+              }}
+            >
               <Card.Img
                 variant="top"
                 src={dogImage}
@@ -183,23 +185,12 @@ export function DogInfo({
               />
               <Card.Body>
                 <Card.Title>{dogBreed && `Breed: ${dogBreed}`}</Card.Title>
-                <Card.Title>{dogName && `Name: ${customNames[dogBreed] || "Give your pet a name;))"}`}</Card.Title>
-                <BarChart
-                  xAxis={[
-                    {
-                      scaleType: "band",
-                      data: ["Children", "Other Dogs", "Strangers"],
-                      label: "Friendliness Level with Other Species",
-                    },
-                  ]}
-                  series={[
-                    {
-                      data: [dogChildren, dogOtherDog, dogStranger],
-                    },
-                  ]}
-                  width={400}
-                  height={300}
-                />
+                <Card.Title>
+                  {dogName &&
+                    `Name: ${
+                      customNames[dogBreed] || "Give your pet a name;))"
+                    }`}
+                </Card.Title>
 
                 <Button
                   onClick={handleShow}
@@ -231,14 +222,14 @@ export function DogInfo({
               </Card.Body>
             </Card>
           )}
-
-            {/* image modal */}
-          {isOpen && dogCollection.map((dog, index) => {
-            console.log("selectedCollectionDog", selectedCollectionDog);
-            console.log("what dog", dog);
-            if (dog.key === selectedCollectionDog.key) {
-            return (
-          <ImageModal
+          {/* image modal */}
+          {isOpen &&
+            dogCollection.map((dog, index) => {
+              console.log("selectedCollectionDog", selectedCollectionDog);
+              console.log("what dog", dog);
+              if (dog.key === selectedCollectionDog.key) {
+                return (
+                  <ImageModal
                     key={dog.key}
                     src={dog.imageUrl}
                     alt={dog.key}
@@ -246,11 +237,27 @@ export function DogInfo({
                     handleCloseSave={handleCloseSave}
                     onClose={() => setIsOpen(false)}
                     updateCollectionName={updateCollectionName}
-                  />  
-            );
-          }
-})}
+                  />
+                );
+              }
+            })}
         </div>
+        <BarChart
+          xAxis={[
+            {
+              scaleType: "band",
+              data: ["Children", "Other Dogs", "Strangers"],
+              label: "Friendliness Level with Other Species",
+            },
+          ]}
+          series={[
+            {
+              data: [dogChildren, dogOtherDog, dogStranger],
+            },
+          ]}
+          width={400}
+          height={300}
+        />
       </div>
     </>
   );
