@@ -7,6 +7,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
+import { display } from "@mui/system";
 
 export function DogInfo({
   addToDogCollection,
@@ -272,6 +273,22 @@ export function DogInfo({
               }
             })}
         </div>
+        <BarChart
+          xAxis={[
+            {
+              scaleType: "band",
+              data: ["Children", "Other Dogs", "Strangers"],
+              label: "Friendliness Level with Other Species",
+            },
+          ]}
+          series={[
+            {
+              data: [dogChildren, dogOtherDog, dogStranger],
+            },
+          ]}
+          width={400}
+          height={300}
+        />
       </div>
     </>
   );
