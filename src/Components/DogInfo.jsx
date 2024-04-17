@@ -10,12 +10,16 @@ import NameCustomizeModal from "./NameCustomizeModal";
 
 export function DogInfo({
   addToDogCollection,
-  removeDogCollection,
   dogCollection,
   updateCollectionName,
+  isOpen,
+  setIsOpen,
+  selectedCollectionDog,
 }) {
   const [breeds, setBreeds] = useState([]);
+  const [dogBreed, setDogBreed] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [dogBreed, setDogBreed] = useState("");
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
   const [dogChildren, setDogChildren] = useState("");
@@ -23,16 +27,27 @@ export function DogInfo({
   const [dogStranger, setDogStranger] = useState("");
   const [message, setMessage] = useState("");
 
+  const [customNames, setCustomNames] = useState(() => {
+    const storedCustomNames = localStorage.getItem("customNames");
+    return storedCustomNames ? JSON.parse(storedCustomNames) : {};
+  });
+
   const handleSearch = (value) => {
     const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
     setSearchResults(filteredBreeds);
   };
+  const [customNames, setCustomNames] = useState(() => {
+    const storedCustomNames = localStorage.getItem("customNames");
+    return storedCustomNames ? JSON.parse(storedCustomNames) : {};
+  });
+
 
   const handleSelect = async (breed) => {
     try {
       const existingData = JSON.parse(localStorage.getItem(breed));
       if (existingData) {
         if (existingData === "empty") {
+          setDogBreed("");
           setDogName("");
           setDogImage("");
           setDogChildren("");
@@ -40,7 +55,9 @@ export function DogInfo({
           setDogStranger("");
           setMessage("No data found for the specified dog.");
         } else {
-          setDogName(existingData.name);
+          setDogBreed(breed);
+          const customName = customNames[breed];
+          setDogName(customName || existingData.name);
           setDogImage(existingData.image_link);
           setDogChildren(existingData.good_with_children);
           setDogOtherDog(existingData.good_with_other_dogs);
@@ -52,7 +69,9 @@ export function DogInfo({
         if (data.length > 0) {
           const dog = data[0];
           localStorage.setItem(breed, JSON.stringify(dog));
-          setDogName(dog.name);
+          setDogBreed(breed);
+          const customName = customNames[breed];
+          setDogName(customName || dog.name);
           setDogImage(dog.image_link);
           setDogChildren(dog.good_with_children);
           setDogOtherDog(dog.good_with_other_dogs);
@@ -60,6 +79,7 @@ export function DogInfo({
           setMessage("");
         } else {
           localStorage.setItem(breed, JSON.stringify("empty"));
+          setDogBreed("");
           setDogName("");
           setDogImage("");
           setDogChildren("");
@@ -102,66 +122,31 @@ export function DogInfo({
     handleSelect("affenpinscher");
   }, []);
 
-  const handleRemoveClick = (e, dogName) => {
-    e.stopPropagation(); // Prevents List.Item onClick from being triggered
-    removeDogCollection(dogName);
-  };
-
-  // hover effect
-  // const [showPopup, setShowPopup] = useState(false);
-  // const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  // const handleMouseMove = (event) => {
-  //   const cursorX = event.clientX,
-  //     cursorY = event.clientY;
-  //   const itemLeft = event.target.getBoundingClientRect().left,
-  //     itemTop = event.target.getBoundingClientRect().top;
-
-  //   const positionX = cursorX - itemLeft,
-  //     positionY = cursorY - itemTop - window.scrollY;
-
-  //   setPosition({
-  //     x: positionX,
-  //     y: positionY,
-  //   });
-  // };
-
-  // const handleMouseEnter = (event) => {
-  //   event.preventDefault();
-  //   setShowPopup(true);
-  //   console.log("showPopup", showPopup);
-  //   console.log("position", position);
-  // };
-
-  // const handleMouseLeave = () => {
-  //   setShowPopup(false);
-  // };
-
-  //image modal
-  const [selectedCollectionIndex, setSelectedCollectionIndex] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
-  const showModal = (e) => {
-    e.stopPropagation(); // Stop the event from bubbling up further
-    const index = e.currentTarget.alt.split(" ")[1];
-
-    if (index !== undefined) {
-      setIsOpen(true);
-      setSelectedCollectionIndex(parseInt(index, 10)); // Parse the index to ensure it's a number
-      console.log("Selected Collection Index:", index);
-    } else {
-      console.error("Invalid index extracted from alt attribute");
-    }
-  };
-
-  // Function to handle selecting a pet from the collection and give it a name
+  // Function to change the name of the pet on the card
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
-  const handleCloseSave = (petNameInput) => {
+  const handleCloseSave = (petNameInput, breed) => {
     setShow(false);
     setDogName(petNameInput);
+    setCustomNames((prev) => ({
+      ...prev,
+      [breed]: petNameInput,
+    }));
+
+    localStorage.setItem(
+      "customNames",
+      JSON.stringify({
+        ...customNames,
+        [breed]: petNameInput,
+      })
+    );
+
+    console.log("Custom names:", customNames);
   };
+
+
 
   return (
     <>
@@ -195,6 +180,7 @@ export function DogInfo({
               <Card.Img
                 variant="top"
                 src={dogImage}
+                alt={dogBreed}
                 style={{
                   width: "100%",
                   height: "300px",
@@ -202,7 +188,8 @@ export function DogInfo({
                 }}
               />
               <Card.Body>
-                <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
+                <Card.Title>{dogBreed && `Breed: ${dogBreed}`}</Card.Title>
+                <Card.Title>{dogName && `Name: ${customNames[dogBreed] || "Give your pet a name;))"}`}</Card.Title>
                 <BarChart
                   xAxis={[
                     {
@@ -219,19 +206,6 @@ export function DogInfo({
                   width={400}
                   height={300}
                 />
-                {/* {showPopup && (
-                  <div
-                    className="popup"
-                    style={{
-                      position: "absolute",
-                      left: `${position.x + 150}px`,
-                      top: `${position.y + 250}px`,
-                      // pointerEvents: 'none',
-                    }}
-                  >
-                    Click me!
-                  </div>
-                )} */}
 
                 <Button
                   onClick={handleShow}
@@ -245,30 +219,15 @@ export function DogInfo({
                   show={show}
                   handleClose={handleClose}
                   handleCloseSave={handleCloseSave}
+                  breed={dogBreed}
                 />
 
                 <Button
                   variant="primary"
-                  onClick={() => {
+                  onClick={(e) => {
                     addToDogCollection({
-                      key: `dog ${dogCollection.length}`,
-                      icon: (
-                        <span>
-                          <span
-                            className="remove-button"
-                            onClick={(e) => handleRemoveClick(e, dogName)}
-                          >
-                            ❌
-                          </span>
-                          <img
-                            onClick={(e) => showModal(e)}
-                            className="image"
-                            src={dogImage}
-                            alt={`dog ${dogCollection.length}`}
-                            style={{ width: "30px", height: "30px" }}
-                          />
-                        </span>
-                      ),
+                      key: dogBreed,
+                      icon: dogImage,
                       label: dogName,
                     });
                   }}
@@ -279,23 +238,24 @@ export function DogInfo({
             </Card>
           )}
 
-          {/* image modal */}
-          {isOpen &&
-            dogCollection.map((dog, index) => {
-              if (index === selectedCollectionIndex) {
-                return (
-                  <ImageModal
-                    key={index}
-                    src={dog.icon.props.children[1].props.src}
-                    alt={`dog ${index}`}
-                    caption={dogName}
+            {/* image modal */}
+          {isOpen && dogCollection.map((dog, index) => {
+            console.log("selectedCollectionDog", selectedCollectionDog);
+            console.log("what dog", dog);
+            if (dog.key === selectedCollectionDog.key) {
+            return (
+          <ImageModal
+                    key={dog.key}
+                    src={dog.imageUrl}
+                    alt={dog.key}
+                    caption={dog.label}
                     handleCloseSave={handleCloseSave}
                     onClose={() => setIsOpen(false)}
                     updateCollectionName={updateCollectionName}
-                  />
-                );
-              }
-            })}
+                  />  
+            );
+          }
+})}
         </div>
       </div>
     </>
