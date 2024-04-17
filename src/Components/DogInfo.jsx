@@ -19,18 +19,12 @@ export function DogInfo({
   const [breeds, setBreeds] = useState([]);
   const [dogBreed, setDogBreed] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [dogBreed, setDogBreed] = useState("");
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
   const [dogChildren, setDogChildren] = useState("");
   const [dogOtherDog, setDogOtherDog] = useState("");
   const [dogStranger, setDogStranger] = useState("");
   const [message, setMessage] = useState("");
-
-  const [customNames, setCustomNames] = useState(() => {
-    const storedCustomNames = localStorage.getItem("customNames");
-    return storedCustomNames ? JSON.parse(storedCustomNames) : {};
-  });
 
   const handleSearch = (value) => {
     const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
