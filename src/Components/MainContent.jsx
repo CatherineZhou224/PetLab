@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button, Tabs, theme } from "antd";
 import Title from "antd/es/typography/Title";
@@ -7,6 +7,7 @@ import { DogInfo } from "./DogInfo";
 import { CatInfo } from "./CatInfo";
 import DogIcon from "./DogIcon";
 import CatIcon from "./CatIcon";
+import Sound from "./Sound";
 
 const { Header, Sider } = Layout;
 const MainContent = () => {
@@ -24,17 +25,35 @@ const MainContent = () => {
 
   //Pet Collection Manager
   // States for dog and cat collections
- const [dogCollection, setDogCollection] = useState([]);
+  const [dogCollection, setDogCollection] = useState(() => {
+    const storedDogs = localStorage.getItem("dogCollection");
+    return storedDogs ? JSON.parse(storedDogs) : [];
+  });
 
-const [catCollection, setCatCollection] = useState([]);
+  const [catCollection, setCatCollection] = useState(() => {
+    const storedCats = localStorage.getItem("catCollection");
+    return storedCats ? JSON.parse(storedCats) : [];
+  });
 
   // Handlers for adding to collections
   const addToDogCollection = (dog) => {
-    if (dogCollection.some((d) => d.label === dog.label)) {
+    if (dogCollection.some((d) => d.key === dog.key)) {
       return alert("This dog is already in the collection.");
     }
-    setDogCollection((prev) => [...prev, dog]);
-    localStorage.setItem("dogCollection", JSON.stringify(dogCollection));
+
+    const newDog = {
+      key: dog.key,
+      imageUrl: dog.icon,
+      label: dog.label,
+    };
+
+    setDogCollection((prev) => {
+      const updatedCollection = [...prev, newDog];
+      localStorage.setItem("dogCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
+
+    console.log("Dog collection:", dogCollection);
   };
 
   const addToCatCollection = (cat) => {
@@ -42,64 +61,152 @@ const [catCollection, setCatCollection] = useState([]);
     if (catCollection.some((c) => c.label === cat.label)) {
       return alert("This cat is already in the collection.");
     }
-    setCatCollection((prev) => [...prev, cat]);
-    localStorage.setItem("catCollection", JSON.stringify(catCollection));
-  };
 
-  const removeCatCollection = (catName) => {
-    setCatCollection((prev) => prev.filter((cat) => cat.label !== catName));
+    const newCat = {
+      key: cat.key,
+      imageUrl: cat.icon,
+      label: cat.label,
+    };
+
+    setCatCollection((prev) => {
+      const updatedCollection = [...prev, newCat];
+      localStorage.setItem("catCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
   };
 
   const removeDogCollection = (dogName) => {
-    setDogCollection((prev) => prev.filter((dog) => dog.label !== dogName));
+    setDogCollection((prev) => {
+      const updatedCollection = prev.filter((dog) => dog.label !== dogName);
+      localStorage.setItem("dogCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
   };
 
-  const updateCollectionName = (newName, alt) => {
-    setDogCollection(prev => prev.map(dog => {
-        if (dog.key === alt) {
-            return {...dog, label: newName};
+  const removeCatCollection = (catName) => {
+    setCatCollection((prev) => {
+      const updatedCollection = prev.filter((cat) => cat.label !== catName);
+      localStorage.setItem("catCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
+  };
+
+  const updateCollectionName = (newName, breed) => {
+    setDogCollection((prev) => {
+      const updatedCollection = prev.map((dog) => {
+        if (dog.key === breed) {
+          return { ...dog, label: newName };
         }
         return dog;
-    }));
-    localStorage.setItem("dogCollection", JSON.stringify(dogCollection));
-    setCatCollection(prev => prev.map(cat => {
-        if (cat.key === alt) {
-            return {...cat, label: newName};
+      });
+      localStorage.setItem("dogCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
+
+    setCatCollection((prev) => {
+      const updatedCollection = prev.map((cat) => {
+        if (cat.key === breed) {
+          return { ...cat, label: newName };
         }
         return cat;
-    }));
-    localStorage.setItem("catCollection", JSON.stringify(catCollection));
+      });
+      localStorage.setItem("catCollection", JSON.stringify(updatedCollection));
+      return updatedCollection;
+    });
+  };
 
-};
+  //image modal
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCollectionPet, setSelectedCollectionPet] = useState({});
+
+  const showModal = (e, pet) => {
+    //if the current tab is not the same as the data collection image you clicked on, do not open the modal and show a alert message
+    if (activeTab === "1" && !dogCollection.some((dog) => dog.key === pet.key)) {
+      return alert("Please switch to the cat tab before accessing the cat collection.");
+    } else if (activeTab === "2" && !catCollection.some((cat) => cat.key === pet.key)) {
+      return alert("Please switch to the dog tab before accessing the dog collection.");
+    } else {
+    e.stopPropagation();
+    console.log("Opening modal for pet:", pet);
+    setSelectedCollectionPet(pet);
+    setIsOpen(true);
+    console.log("Modal open state:", isOpen);
+    }
+  };
+
+  //hover effect
+  const [showPopup, setShowPopup] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (event) => {
+    const cursorX = event.clientX,
+      cursorY = event.clientY;
+
+    setPosition({
+      x: cursorX,
+      y: cursorY,
+    });
+  };
+
+  const handleMouseEnter = (event) => {
+    event.preventDefault();
+    setShowPopup(true);
+    console.log("showPopup", showPopup);
+    console.log("position", position);
+  };
+
+  const handleMouseLeave = () => {
+    setShowPopup(false);
+  };
 
 
+  //search bar resizing
+  const [searchBarText, setSearchBarText] = useState(
+    window.innerWidth < 1000 ? "Search" : "Search for dog breeds"
+  );
 
-  //Card hover effect 
-  // const [showPopup, setShowPopup] = useState(false);
-  // const [position, setPosition] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const handleResize = () => {
+      // do magic for resize
+        if (window.innerWidth < 500) {
+          setSearchBarText("");
+        } else if (window.innerWidth >= 500 && window.innerWidth < 1000) {
+          setSearchBarText('Search');
+        } else if (window.innerWidth >= 1000) {
+          setSearchBarText('Search for dog breeds');
+        }
+      };
 
-  // const handleMouseMove = (event) => {
-  //   const { clientX, clientY } = event;
-  //   setPosition({
-  //     x: clientX,
-  //     y: clientY
-  //   });
-  // };
+    window.addEventListener('resize', handleResize);
 
-  // const handleMouseEnter = () => {
-  //   setShowPopup(true);
-  // };
+    return () => {
+     window.removeEventListener('resize', handleResize);
+    };
 
-  // const handleMouseLeave = () => {
-  //   setShowPopup(false);
-  // };
+  }, []);
 
-  //end
+
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sider */}
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider 
+        trigger={null} 
+        collapsible 
+        collapsed={collapsed}
+      >
+        <div className="nav-btn-container">
+          <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+              }}
+            />
+        </div>
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
@@ -112,14 +219,93 @@ const [catCollection, setCatCollection] = useState([]);
               key: "1",
               icon: <DogIcon fill="white" />,
               label: "Dog Collection",
-              //if the dog info is already in the local storage, display it
-              children: dogCollection,
+              children: dogCollection.map((dog, index) => ({
+                key: dog.key,
+                icon: (
+                  <span>
+                    <span
+                      className="remove-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeDogCollection(dog.label);
+                      }}
+                    >
+                      ❌
+                    </span>
+                    <img
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showModal(e, dog);
+                        console.log("is open?", isOpen);
+                      }}
+                      className="image"
+                      src={dog.imageUrl}
+                      alt={dog.key}
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </span>
+                ),
+                label: (
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showModal(e, dog);
+                      console.log("is open?", isOpen);
+                    }}
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    {dog.label}
+                  </div>
+                ),
+              })),
             },
             {
               key: "2",
               icon: <CatIcon fill="white" />,
               label: "Cat Collection",
-              children: catCollection,
+              children: catCollection.map((cat, index) => ({
+                key: cat.key,
+                icon: (
+                  <span>
+                    <span
+                      className="remove-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeCatCollection(cat.label);
+                      }}
+                    >
+                      ❌
+                    </span>
+                    <img
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showModal(e, cat);
+                        console.log("is open?", isOpen);
+                      }}
+                      className="image"
+                      src={cat.imageUrl}
+                      alt={cat.key}
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </span>
+                ),
+                label: (
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showModal(e, cat);
+                      console.log("is open?", isOpen);
+                    }}
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    {cat.label}
+                  </div>
+                ),
+              })),
             },
           ]}
         />
@@ -135,17 +321,10 @@ const [catCollection, setCatCollection] = useState([]);
             background: colorBgContainer,
           }}
         >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
-          />
-          <Title level={2} style={{ margin: 0 }}>
+          <Title 
+          className="content-page-title"
+          level={2} 
+          style={{ margin: 0 }}>
             Pet Lab
           </Title>
         </Header>
@@ -163,13 +342,16 @@ const [catCollection, setCatCollection] = useState([]);
             }
             key="1"
           >
-            <DogInfo 
+            <DogInfo
               activeTab={activeTab}
               addToDogCollection={addToDogCollection}
               removeDogCollection={removeDogCollection}
               dogCollection={dogCollection}
               updateCollectionName={updateCollectionName}
-
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              selectedCollectionDog={selectedCollectionPet}
+              searchBarText={searchBarText}
             />
           </TabPane>
           <TabPane
@@ -186,11 +368,29 @@ const [catCollection, setCatCollection] = useState([]);
               removeCatCollection={removeCatCollection}
               catCollection={catCollection}
               updateCollectionName={updateCollectionName}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              selectedCollectionCat={selectedCollectionPet}
+              searchBarText={searchBarText}
             />
           </TabPane>
         </Tabs>
       </Layout>
 
+      {showPopup && (
+        <div
+          className="popup"
+          style={{
+            position: "absolute",
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+          }}
+        >
+          Click on the thubnail to view the detailed image!
+        </div>
+      )}
+
+      <Sound />
     </Layout>
   );
 };

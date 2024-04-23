@@ -7,21 +7,33 @@ import { BarChart } from "@mui/x-charts/BarChart";
 
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
+import { display } from "@mui/system";
 
 export function DogInfo({
   addToDogCollection,
-  removeDogCollection,
   dogCollection,
   updateCollectionName,
+  isOpen,
+  setIsOpen,
+  selectedCollectionDog,
+  searchBarText,
 }) {
   const [breeds, setBreeds] = useState([]);
+  const [dogBreed, setDogBreed] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [dogName, setDogName] = useState("");
   const [dogImage, setDogImage] = useState("");
+  const [dogHeight, setDogHeight] = useState("");
+  const [dogWeight, setDogWeight] = useState("");
   const [dogChildren, setDogChildren] = useState("");
   const [dogOtherDog, setDogOtherDog] = useState("");
   const [dogStranger, setDogStranger] = useState("");
   const [message, setMessage] = useState("");
+
+  const [customNames, setCustomNames] = useState(() => {
+    const storedCustomNames = localStorage.getItem("customNames.dogs");
+    return storedCustomNames ? JSON.parse(storedCustomNames) : {};
+  });
 
   const handleSearch = (value) => {
     const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
@@ -33,15 +45,22 @@ export function DogInfo({
       const existingData = JSON.parse(localStorage.getItem(breed));
       if (existingData) {
         if (existingData === "empty") {
+          setDogBreed("");
           setDogName("");
+          setDogHeight("");
+          setDogWeight("");
           setDogImage("");
           setDogChildren("");
           setDogOtherDog("");
           setDogStranger("");
           setMessage("No data found for the specified dog.");
         } else {
-          setDogName(existingData.name);
+          setDogBreed(breed);
+          const customName = customNames[breed];
+          setDogName(customName || existingData.name);
           setDogImage(existingData.image_link);
+          setDogHeight(existingData.min_height_female);
+          setDogWeight(existingData.min_weight_female);
           setDogChildren(existingData.good_with_children);
           setDogOtherDog(existingData.good_with_other_dogs);
           setDogStranger(existingData.good_with_strangers);
@@ -52,7 +71,11 @@ export function DogInfo({
         if (data.length > 0) {
           const dog = data[0];
           localStorage.setItem(breed, JSON.stringify(dog));
-          setDogName(dog.name);
+          setDogBreed(breed);
+          const customName = customNames[breed];
+          setDogName(customName || dog.name);
+          setDogHeight(dog.min_height_female);
+          setDogWeight(dog.min_weight_female);
           setDogImage(dog.image_link);
           setDogChildren(dog.good_with_children);
           setDogOtherDog(dog.good_with_other_dogs);
@@ -60,7 +83,10 @@ export function DogInfo({
           setMessage("");
         } else {
           localStorage.setItem(breed, JSON.stringify("empty"));
+          setDogBreed("");
           setDogName("");
+          setDogHeight("");
+          setDogWeight("");
           setDogImage("");
           setDogChildren("");
           setDogOtherDog("");
@@ -102,48 +128,46 @@ export function DogInfo({
     handleSelect("affenpinscher");
   }, []);
 
-  const handleRemoveClick = (e, dogName) => {
-    e.stopPropagation(); // Prevents List.Item onClick from being triggered
-    removeDogCollection(dogName);
-  };
-
-  //image modal
-  const [selectedCollectionIndex, setSelectedCollectionIndex] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
-  const showModal = (e) => {
-    e.stopPropagation(); // Stop the event from bubbling up further
-    const index = e.currentTarget.alt.split(" ")[1];
-
-    if (index !== undefined) {
-      setIsOpen(true);
-      setSelectedCollectionIndex(parseInt(index, 10)); // Parse the index to ensure it's a number
-      console.log("Selected Collection Index:", index);
-    } else {
-      console.error("Invalid index extracted from alt attribute");
-    }
-  };
-
-  // Function to handle selecting a pet from the collection and give it a name
+  // Function to change the name of the pet on the card
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
-  const handleCloseSave = (petNameInput) => {
+  const handleCloseSave = (petNameInput, breed) => {
     setShow(false);
     setDogName(petNameInput);
+    setCustomNames((prev) => ({
+      ...prev,
+      [breed]: petNameInput,
+    }));
+
+    localStorage.setItem(
+      "customNames.dogs",
+      JSON.stringify({
+        ...customNames,
+        [breed]: petNameInput,
+      })
+    );
+    updateCollectionName(petNameInput, breed);
+    console.log("Custom dog names:", customNames);
   };
+
 
   return (
     <>
+    <div className="search-breed-wrapper">
       <AutoComplete
-        style={{ width: 300, marginBottom: 20 }}
+        style={{ width: '20vw', marginBottom: 0 }}
         options={searchResults.map((breed) => ({ value: breed }))}
         onSelect={handleSelect}
         onSearch={handleSearch}
-        placeholder="Search for dog breeds"
+        placeholder={searchBarText}
       >
         <Input.Search enterButton />
       </AutoComplete>
+
+      <div className="breed-header">{dogBreed}</div>
+    </div>
 
       <div className="container">
         <List
@@ -155,30 +179,40 @@ export function DogInfo({
               {breed.charAt(0).toUpperCase() + breed.slice(1)}
             </List.Item>
           )}
-          style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
+          style={{ overflowY: "scroll"}}
         />
 
-        <div>
-          {!dogImage && message && <h3>{message}</h3>}
+          {!dogImage && message && <h3 className="alert-message">{message}</h3>}
           {dogImage && !message && (
-            <Card style={{ width: "25rem" }}>
+            <Card>
               <Card.Img
                 variant="top"
                 src={dogImage}
+                alt={dogBreed}
                 style={{
                   width: "100%",
-                  height: "300px",
                   objectFit: "cover",
                 }}
               />
               <Card.Body>
-                <Card.Title>{dogName && `Name: ${dogName}`}</Card.Title>
+                <Card.Title>{dogBreed && `Breed: ${dogBreed}`}</Card.Title>
+                <Card.Title>
+                  {dogName &&
+                    `Name: ${
+                      customNames[dogBreed] || "Give your pet a name;))"
+                    }`}
+                </Card.Title>
+                <Card.Text>
+                  {dogWeight && `Weight: ${dogWeight} pounds`}
+                  <br />
+                  {dogHeight && `Height: ${dogHeight} inches`}
+                </Card.Text>
                 <BarChart
                   xAxis={[
                     {
                       scaleType: "band",
-                      data: ["Children", "Other Dogs", "Strangers"],
-                      label: "Friendliness Level with Other Species",
+                      data: ["with Children", "with Dogs", "with Strangers"],
+                      label: "Friendliness Level",
                     },
                   ]}
                   series={[
@@ -189,7 +223,7 @@ export function DogInfo({
                   width={400}
                   height={300}
                 />
-                
+              <div className="button-wrapper">
                 <Button
                   onClick={handleShow}
                   variant="secondary"
@@ -202,36 +236,22 @@ export function DogInfo({
                   show={show}
                   handleClose={handleClose}
                   handleCloseSave={handleCloseSave}
+                  breed={dogBreed}
                 />
 
                 <Button
                   variant="primary"
-                  onClick={() => {
+                  onClick={(e) => {
                     addToDogCollection({
-                      key: `dog ${dogCollection.length}`,
-                      icon: (
-                        <span>
-                          <span
-                            className="remove-button"
-                            onClick={(e) => handleRemoveClick(e, dogName)}
-                          >
-                            ❌
-                          </span>
-                          <img
-                            onClick={(e) => showModal(e)}
-                            className="image"
-                            src={dogImage}
-                            alt={`dog ${dogCollection.length}`}
-                            style={{ width: "30px", height: "30px" }}
-                          />
-                        </span>
-                      ),
+                      key: dogBreed,
+                      icon: dogImage,
                       label: dogName,
                     });
                   }}
                 >
                   Add to collection
                 </Button>
+              </div>
               </Card.Body>
             </Card>
           )}
@@ -239,13 +259,15 @@ export function DogInfo({
           {/* image modal */}
           {isOpen &&
             dogCollection.map((dog, index) => {
-              if (index === selectedCollectionIndex) {
+              console.log("selectedCollectionDog", selectedCollectionDog);
+              console.log("what dog", dog);
+              if (dog.key === selectedCollectionDog.key) {
                 return (
                   <ImageModal
-                    key={index}
-                    src={dog.icon.props.children[1].props.src}
-                    alt={`dog ${index}`}
-                    caption={dogName}
+                    key={dog.key}
+                    src={dog.imageUrl}
+                    alt={dog.key}
+                    caption={dog.label}
                     handleCloseSave={handleCloseSave}
                     onClose={() => setIsOpen(false)}
                     updateCollectionName={updateCollectionName}
@@ -254,7 +276,6 @@ export function DogInfo({
               }
             })}
         </div>
-      </div>
     </>
   );
 }
