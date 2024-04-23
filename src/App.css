@@ -382,7 +382,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   font-weight: bold;
   color: white;
   text-align: center;
-  margin: 14% 0 25px 0;
+  margin: 10% 0 25px 0;
 }
 
 .loading-num {
@@ -416,7 +416,6 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  position: absolute;
   width: 100%;
   padding: 0;
   margin: 0;
