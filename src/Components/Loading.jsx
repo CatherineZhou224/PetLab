@@ -17,11 +17,11 @@ const Loading = ({ setProgress }) => {
                 const nextNow = prevNow + 5;
                 if (nextNow >= 100) {
                     clearInterval(intervalId);
-                    setFadeOut(true); // Start the fade-out
+                    setFadeOut(false); // Start the fade-out
                     setTimeout(() => {
-                        setProgress(100);
+                        setProgress(90);
                     }, 500);
-                    return 100;
+                    return 90;
                 }
                 return nextNow;
             });
