@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu, Button, Tabs, theme } from "antd";
 import Title from "antd/es/typography/Title";
@@ -7,6 +7,7 @@ import { DogInfo } from "./DogInfo";
 import { CatInfo } from "./CatInfo";
 import DogIcon from "./DogIcon";
 import CatIcon from "./CatIcon";
+import Sound from "./Sound";
 
 const { Header, Sider } = Layout;
 const MainContent = () => {
@@ -119,11 +120,18 @@ const MainContent = () => {
   const [selectedCollectionPet, setSelectedCollectionPet] = useState({});
 
   const showModal = (e, pet) => {
+    //if the current tab is not the same as the data collection image you clicked on, do not open the modal and show a alert message
+    if (activeTab === "1" && !dogCollection.some((dog) => dog.key === pet.key)) {
+      return alert("Please switch to the cat tab before accessing the cat collection.");
+    } else if (activeTab === "2" && !catCollection.some((cat) => cat.key === pet.key)) {
+      return alert("Please switch to the dog tab before accessing the dog collection.");
+    } else {
     e.stopPropagation();
     console.log("Opening modal for pet:", pet);
     setSelectedCollectionPet(pet);
     setIsOpen(true);
     console.log("Modal open state:", isOpen);
+    }
   };
 
   //hover effect
@@ -150,6 +158,32 @@ const MainContent = () => {
   const handleMouseLeave = () => {
     setShowPopup(false);
   };
+
+
+  //search bar resizing
+  const [searchBarText, setSearchBarText] = useState("");
+
+  useEffect(() => {
+    const handleResize = () => {
+      // do magic for resize
+        if (window.innerWidth < 500) {
+          setSearchBarText("");
+        } else if (window.innerWidth >= 500 && window.innerWidth < 1000) {
+          setSearchBarText('Search');
+        } else if (window.innerWidth >= 1000) {
+          setSearchBarText('Search for dog breeds');
+        }
+      };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+     window.removeEventListener('resize', handleResize);
+    };
+    
+  }, []);
+
+
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -315,6 +349,7 @@ const MainContent = () => {
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               selectedCollectionDog={selectedCollectionPet}
+              searchBarText={searchBarText}
             />
           </TabPane>
           <TabPane
@@ -334,6 +369,7 @@ const MainContent = () => {
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               selectedCollectionCat={selectedCollectionPet}
+              searchBarText={searchBarText}
             />
           </TabPane>
         </Tabs>
@@ -351,6 +387,8 @@ const MainContent = () => {
           Click on the thubnail to view the detailed image!
         </div>
       )}
+
+      <Sound />
     </Layout>
   );
 };
