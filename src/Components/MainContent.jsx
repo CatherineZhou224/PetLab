@@ -9,22 +9,24 @@ import DogIcon from "./DogIcon";
 import CatIcon from "./CatIcon";
 import Sound from "./Sound";
 
+// Main component to handle the layout and state of the pet application
 const { Header, Sider } = Layout;
 const MainContent = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState("1");
+  const [collapsed, setCollapsed] = useState(false); // State to handle sidebar collapse
+  const [activeTab, setActiveTab] = useState("1"); // State to handle active tab for switching between dog and cat views
   const {
     token: { colorBgContainer },
-  } = theme.useToken();
+  } = theme.useToken(); // Use Ant Design's theme tokens for styling
 
   const { TabPane } = Tabs;
 
+  // Function to toggle tabs between Dogs and Cats sections
   const handleTabChange = () => {
     setActiveTab((prev) => (prev === "1" ? "2" : "1"));
   };
 
   //Pet Collection Manager
-  // States for dog and cat collections
+  // State initialization for dog and cat collections, fetching from local storage if available
   const [dogCollection, setDogCollection] = useState(() => {
     const storedDogs = localStorage.getItem("dogCollection");
     return storedDogs ? JSON.parse(storedDogs) : [];
@@ -35,7 +37,7 @@ const MainContent = () => {
     return storedCats ? JSON.parse(storedCats) : [];
   });
 
-  // Handlers for adding to collections
+  // Function to add a dog to the collection if not already present
   const addToDogCollection = (dog) => {
     if (dogCollection.some((d) => d.key === dog.key)) {
       return alert("This dog is already in the collection.");
@@ -56,6 +58,7 @@ const MainContent = () => {
     console.log("Dog collection:", dogCollection);
   };
 
+  // Similar function for cats
   const addToCatCollection = (cat) => {
     //if the cat is already in the collection, do not add it again
     if (catCollection.some((c) => c.label === cat.label)) {
@@ -75,6 +78,7 @@ const MainContent = () => {
     });
   };
 
+  // Functions to remove a pet from the collection
   const removeDogCollection = (dogName) => {
     setDogCollection((prev) => {
       const updatedCollection = prev.filter((dog) => dog.label !== dogName);
@@ -82,7 +86,6 @@ const MainContent = () => {
       return updatedCollection;
     });
   };
-
   const removeCatCollection = (catName) => {
     setCatCollection((prev) => {
       const updatedCollection = prev.filter((cat) => cat.label !== catName);
@@ -91,7 +94,9 @@ const MainContent = () => {
     });
   };
 
+  // Function to update the name of a pet in the collection
   const updateCollectionName = (newName, breed) => {
+    // Update dog collection
     setDogCollection((prev) => {
       const updatedCollection = prev.map((dog) => {
         if (dog.key === breed) {
@@ -103,6 +108,7 @@ const MainContent = () => {
       return updatedCollection;
     });
 
+    // Update cat collection
     setCatCollection((prev) => {
       const updatedCollection = prev.map((cat) => {
         if (cat.key === breed) {
@@ -115,10 +121,11 @@ const MainContent = () => {
     });
   };
 
-  //image modal
+  // Modal state for image display
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCollectionPet, setSelectedCollectionPet] = useState({});
 
+  // Function to show modal based on pet type and current tab
   const showModal = (e, pet) => {
     //if the current tab is not the same as the data collection image you clicked on, do not open the modal and show a alert message
     if (activeTab === "1" && !dogCollection.some((dog) => dog.key === pet.key)) {
@@ -134,10 +141,11 @@ const MainContent = () => {
     }
   };
 
-  //hover effect
+  // States to manage visibility and position of a hoverable popup element.
   const [showPopup, setShowPopup] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
+  // Function to update the position state based on mouse movement.
   const handleMouseMove = (event) => {
     const cursorX = event.clientX,
       cursorY = event.clientY;
@@ -145,9 +153,10 @@ const MainContent = () => {
     setPosition({
       x: cursorX,
       y: cursorY,
-    });
+    }); // Update the position state to the current mouse position.
   };
 
+  // Function to show the popup when the mouse enters a hoverable element.
   const handleMouseEnter = (event) => {
     event.preventDefault();
     setShowPopup(true);
@@ -155,6 +164,7 @@ const MainContent = () => {
     console.log("position", position);
   };
 
+  // Function to hide the popup when the mouse leaves the hoverable element.
   const handleMouseLeave = () => {
     setShowPopup(false);
   };
@@ -186,7 +196,7 @@ const MainContent = () => {
   }, []);
 
 
-
+  // Main render block
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sider */}
