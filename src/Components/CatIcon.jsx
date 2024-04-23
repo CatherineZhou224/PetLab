@@ -1,21 +1,23 @@
 import React from "react";
 import Icon from "@ant-design/icons";
 
+// Component to render SVG of a cat icon
 const CatSvg = ({ fill }) => (
   <svg
-    fill={fill}
+    fill={fill} // Fill color for the SVG, received via props
     height="14px"
     width="14px"
     version="1.1"
     id="Layer_1"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    viewBox="0 0 511.999 511.999"
-    xmlSpace="preserve"
+    viewBox="0 0 511.999 511.999" // Defines the position and dimension, in user space, of an SVG viewport
+    xmlSpace="preserve" // Specifies how white spaces inside the component should be handled
   >
     <g>
       <g>
         <g>
+          {/* Multiple path elements to form the complete cat icon */}
           <path
             d="M201.242,198.348c-11.904,0-21.593,9.787-21.593,21.871c0,12.083,9.688,21.879,21.593,21.879
                c11.92,0,21.606-9.796,21.606-21.879C222.848,208.135,213.163,198.348,201.242,198.348z"
@@ -56,6 +58,7 @@ const CatSvg = ({ fill }) => (
   </svg>
 );
 
+// Component to use CatSvg in an Ant Design Icon
 const CatIcon = ({ fill, ...props }) => (
   <Icon component={() => <CatSvg fill={fill} />} {...props} />
 );
