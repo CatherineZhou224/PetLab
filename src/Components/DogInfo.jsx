@@ -9,6 +9,7 @@ import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
 import { display } from "@mui/system";
 
+// Defines the main DogInfo component with props for managing dog data
 export function DogInfo({
   addToDogCollection,
   dogCollection,
@@ -18,6 +19,7 @@ export function DogInfo({
   selectedCollectionDog,
   searchBarText,
 }) {
+  // State hooks for various attributes of dogs
   const [breeds, setBreeds] = useState([]);
   const [dogBreed, setDogBreed] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -30,16 +32,19 @@ export function DogInfo({
   const [dogStranger, setDogStranger] = useState("");
   const [message, setMessage] = useState("");
 
+  // Retrieve custom names from local storage or initialize as an empty object
   const [customNames, setCustomNames] = useState(() => {
     const storedCustomNames = localStorage.getItem("customNames.dogs");
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
 
+  // Handles search functionality and updates search results based on filter
   const handleSearch = (value) => {
     const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
     setSearchResults(filteredBreeds);
   };
 
+  // Handles selecting a dog breed, fetches its data, or uses cached data
   const handleSelect = async (breed) => {
     try {
       const existingData = JSON.parse(localStorage.getItem(breed));
@@ -100,6 +105,7 @@ export function DogInfo({
     }
   };
 
+  // Initializes component state, fetches breeds from API or cache
   useEffect(() => {
     const fetchBreeds = async () => {
       try {
@@ -125,14 +131,19 @@ export function DogInfo({
       console.error("Error parsing JSON:", error);
     }
 
-    handleSelect("affenpinscher");
+    handleSelect("affenpinscher"); // Default selection
   }, []);
 
-  // Function to change the name of the pet on the card
+  // Modal visibility control
   const [show, setShow] = useState(false);
+
+  // Displays the naming modal
   const handleShow = () => setShow(true);
 
+  // Hides the naming modal
   const handleClose = () => setShow(false);
+
+  // Saves the custom name for the dog and updates local storage
   const handleCloseSave = (petNameInput, breed) => {
     setShow(false);
     setDogName(petNameInput);
@@ -140,7 +151,8 @@ export function DogInfo({
       ...prev,
       [breed]: petNameInput,
     }));
-
+    
+    // Update local storage with the new name
     localStorage.setItem(
       "customNames.dogs",
       JSON.stringify({
@@ -148,11 +160,13 @@ export function DogInfo({
         [breed]: petNameInput,
       })
     );
+
+    // Propagate name change to parent component to update app state
     updateCollectionName(petNameInput, breed);
     console.log("Custom dog names:", customNames);
   };
 
-
+  // Main render block
   return (
     <>
     <div className="search-breed-wrapper">
