@@ -14,7 +14,7 @@ const Loading = ({ setProgress }) => {
         //fake progress bar with constant progressing speed
         const intervalId = setInterval(() => {
             setNow((prevNow) => {
-                const nextNow = prevNow + 100;
+                const nextNow = prevNow + 5;
                 if (nextNow >= 100) {
                     clearInterval(intervalId);
                     setFadeOut(true); // Start the fade-out
