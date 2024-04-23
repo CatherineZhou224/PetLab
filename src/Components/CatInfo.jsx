@@ -132,6 +132,7 @@ export function CatInfo({
 
   return (
     <>
+    <div className="search-breed-wrapper">
       <AutoComplete
         style={{ width: '20vw', marginBottom: 0 }}
         options={searchResults.map((breed) => ({ value: breed }))}
@@ -143,6 +144,7 @@ export function CatInfo({
       </AutoComplete>
 
       <div className="breed-header">{catBreed}</div>
+      </div>
 
       <div className="container">
         <List

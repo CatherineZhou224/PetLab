@@ -155,6 +155,7 @@ export function DogInfo({
 
   return (
     <>
+    <div className="search-breed-wrapper">
       <AutoComplete
         style={{ width: '20vw', marginBottom: 0 }}
         options={searchResults.map((breed) => ({ value: breed }))}
@@ -166,6 +167,7 @@ export function DogInfo({
       </AutoComplete>
 
       <div className="breed-header">{dogBreed}</div>
+    </div>
 
       <div className="container">
         <List
