@@ -161,7 +161,9 @@ const MainContent = () => {
 
 
   //search bar resizing
-  const [searchBarText, setSearchBarText] = useState("");
+  const [searchBarText, setSearchBarText] = useState(
+    window.innerWidth < 1000 ? "Search" : "Search for dog breeds"
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -174,13 +176,13 @@ const MainContent = () => {
           setSearchBarText('Search for dog breeds');
         }
       };
-    
+
     window.addEventListener('resize', handleResize);
-    
+
     return () => {
      window.removeEventListener('resize', handleResize);
     };
-    
+
   }, []);
 
 
