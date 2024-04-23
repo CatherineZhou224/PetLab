@@ -9,14 +9,15 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
 
+// The CatInfo component displays information about cat breeds and allows for customization and addition to a collection.
 export function CatInfo({
-  addToCatCollection,
-  catCollection,
-  updateCollectionName,
-  isOpen,
-  setIsOpen,
-  selectedCollectionCat,
-  searchBarText,
+  addToCatCollection, // Function to add a cat to the collection
+  catCollection, // Array holding the current collection of cats
+  updateCollectionName, // Function to update the name of a cat in the collection
+  isOpen, // State to control visibility of modal dialogs
+  setIsOpen, // Function to set the isOpen state
+  selectedCollectionCat, // Object representing the currently selected cat in the modal
+  searchBarText, // Text to display in the search bar placeholder
 }) {
   const [catBreed, setCatBreed] = useState("");
   const [catImage, setCatImage] = useState("");
@@ -34,11 +35,13 @@ export function CatInfo({
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
 
+  // Function to handle the search input by the user.
   const handleSearch = (value) => {
     const filteredBreeds = catBreeds.filter((breed) => breed.startsWith(value));
     setSearchResults(filteredBreeds);
   };
 
+  // Function called when a breed is clicked. It fetches or retrieves the breed info from local storage.
   const handleClick = async (breed) => {
     try {
       const existingData = JSON.parse(localStorage.getItem(breed));
@@ -99,16 +102,20 @@ export function CatInfo({
     }
   };
 
+  // Initialize a specific breed on component mount.
   useEffect(() => {
     handleClick("Abyssinian");
   }, []);
 
 
-   // Function to change the name of the pet on the card
+   // Modal visibility control
    const [show, setShow] = useState(false);
+   // Displays the naming modal
    const handleShow = () => setShow(true);
  
+   // Hides the naming modal
    const handleClose = () => setShow(false);
+   // Saves the custom name for the dog and updates local storage
    const handleCloseSave = (petNameInput, breed) => {
      setShow(false);
      setCatName(petNameInput);
@@ -117,6 +124,7 @@ export function CatInfo({
        [breed]: petNameInput,
      }));
  
+     // Update local storage with the new name
      localStorage.setItem(
        "customNames.cats",
        JSON.stringify({
@@ -125,11 +133,12 @@ export function CatInfo({
        })
      );
      
+     // Propagate name change to parent component to update app state
      updateCollectionName(petNameInput, breed);
      console.log("Custom cat names:", customNames);
    };
 
-
+  // Main render block
   return (
     <>
     <div className="search-breed-wrapper">
