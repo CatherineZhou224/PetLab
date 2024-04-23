@@ -11,10 +11,10 @@ const Loading = ({ setProgress }) => {
 
     useEffect(() => {
         document.body.classList.add('custom-body');
-        
+        //fake progress bar with constant progressing speed
         const intervalId = setInterval(() => {
             setNow((prevNow) => {
-                const nextNow = prevNow + 5;
+                const nextNow = prevNow + 100;
                 if (nextNow >= 100) {
                     clearInterval(intervalId);
                     setFadeOut(true); // Start the fade-out
@@ -44,7 +44,7 @@ const Loading = ({ setProgress }) => {
             <ProgressBar 
                 className='custom-progress'
                 style={{ width: '50%', height: '25px', margin: '10px auto'}}
-                animated 
+                animated
                 now={now}
             />
 

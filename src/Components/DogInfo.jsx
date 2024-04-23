@@ -16,6 +16,7 @@ export function DogInfo({
   isOpen,
   setIsOpen,
   selectedCollectionDog,
+  searchBarText,
 }) {
   const [breeds, setBreeds] = useState([]);
   const [dogBreed, setDogBreed] = useState("");
@@ -151,14 +152,15 @@ export function DogInfo({
     console.log("Custom dog names:", customNames);
   };
 
+
   return (
     <>
       <AutoComplete
-        style={{ width: 300, marginBottom: 0 }}
+        style={{ width: '20vw', marginBottom: 0 }}
         options={searchResults.map((breed) => ({ value: breed }))}
         onSelect={handleSelect}
         onSearch={handleSearch}
-        placeholder="Search for dog breeds"
+        placeholder={searchBarText}
       >
         <Input.Search enterButton />
       </AutoComplete>
@@ -175,20 +177,18 @@ export function DogInfo({
               {breed.charAt(0).toUpperCase() + breed.slice(1)}
             </List.Item>
           )}
-          style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
+          style={{ overflowY: "scroll"}}
         />
 
-        <div>
           {!dogImage && message && <h3 className="alert-message">{message}</h3>}
           {dogImage && !message && (
-            <Card style={{ width: "95%" }}>
+            <Card>
               <Card.Img
                 variant="top"
                 src={dogImage}
                 alt={dogBreed}
                 style={{
                   width: "100%",
-                  height: "500px",
                   objectFit: "cover",
                 }}
               />
@@ -219,9 +219,9 @@ export function DogInfo({
                     },
                   ]}
                   width={400}
-                  height={250}
+                  height={300}
                 />
-
+              <div className="button-wrapper">
                 <Button
                   onClick={handleShow}
                   variant="secondary"
@@ -249,6 +249,7 @@ export function DogInfo({
                 >
                   Add to collection
                 </Button>
+              </div>
               </Card.Body>
             </Card>
           )}
@@ -273,7 +274,6 @@ export function DogInfo({
               }
             })}
         </div>
-      </div>
     </>
   );
 }

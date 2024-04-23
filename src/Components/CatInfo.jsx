@@ -16,6 +16,7 @@ export function CatInfo({
   isOpen,
   setIsOpen,
   selectedCollectionCat,
+  searchBarText,
 }) {
   const [catBreed, setCatBreed] = useState("");
   const [catImage, setCatImage] = useState("");
@@ -132,14 +133,16 @@ export function CatInfo({
   return (
     <>
       <AutoComplete
-        style={{ width: 300, marginBottom: 0 }}
+        style={{ width: '20vw', marginBottom: 0 }}
         options={searchResults.map((breed) => ({ value: breed }))}
         onSelect={handleClick}
         onSearch={handleSearch}
-        placeholder="Search for cat breeds"
+        placeholder={searchBarText}
       >
         <Input.Search enterButton />
       </AutoComplete>
+
+      <div className="breed-header">{catBreed}</div>
 
       <div className="container">
         <List
@@ -151,19 +154,18 @@ export function CatInfo({
               {breed}
             </List.Item>
           )}
-          style={{ width: "300px", maxHeight: "600px", overflowY: "scroll" }}
+          style={{ overflowY: "scroll" }}
         />
-        <div>
+        
           {!catImage && message && <h3 className="alert-message">{message}</h3>}
           {catImage && !message && (
-            <Card style={{ width: "95%" }}>
+            <Card>
               <Card.Img
                 variant="top"
                 src={catImage}
                 alt={catBreed}
                 style={{
                   width: "100%",
-                  height: "500px",
                   objectFit: "cover",
                 }}
               />
@@ -194,8 +196,9 @@ export function CatInfo({
                     },
                   ]}
                   width={400}
-                  height={250}
+                  height={300}
                 />
+                <div className="button-wrapper">
                 <Button
                   onClick={handleShow}
                   variant="secondary"
@@ -223,6 +226,7 @@ export function CatInfo({
                 >
                   Add to collection
                 </Button>
+                </div>
               </Card.Body>
             </Card>
           )}
@@ -246,23 +250,6 @@ export function CatInfo({
                 );
               }
             })}
-        </div>
-        <BarChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: ["Children", "Other Pets", "Family"],
-              label: "Friendliness Level with Other Species",
-            },
-          ]}
-          series={[
-            {
-              data: [catChildren, catOtherPets, catFamily],
-            },
-          ]}
-          width={400}
-          height={300}
-        />
       </div>
     </>
   );
