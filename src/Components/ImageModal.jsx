@@ -5,15 +5,16 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
+// ImageModal component to display an image and allow renaming
 const ImageModal = ({
-  src,
-  alt,
-  caption,
-  onClose,
-  handleCloseSave,
-  updateCollectionName,
+  src, // Source URL of the image to display
+  alt, // Alternate text for the image
+  caption, // Caption text to display below the image
+  onClose, // Function to call on closing the modal
+  handleCloseSave, // Function to handle saving the new name
+  updateCollectionName, // Function to update the name in the collection
 }) => {
-  const [newName, setNewName] = useState("");
+  const [newName, setNewName] = useState(""); // State to hold the new name input by the user
 
   return (
     <>
@@ -35,15 +36,15 @@ const ImageModal = ({
             aria-label="Rename your pet"
             aria-describedby="basic-addon2"
             value={newName}
-            onChange={(e) => setNewName(e.target.value)}
+            onChange={(e) => setNewName(e.target.value)} // Update newName state as user types
           />
           <Button
             variant="success"
             id="button-addon2"
             onClick={() => {
-              handleCloseSave(newName, alt);
-              updateCollectionName(newName, alt);
-              setNewName("");
+              handleCloseSave(newName, alt); // Call handleCloseSave to save the new name
+              updateCollectionName(newName, alt); // Update the collection with the new name
+              setNewName(""); // Reset newName state to clear the form
             }}
           >
             Save
