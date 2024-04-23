@@ -1,21 +1,24 @@
 import React from "react";
 import Icon from "@ant-design/icons";
 
+// Component that returns SVG markup for a dog icon
 const DogSvg = ({ fill }) => (
+  // SVG element with dynamic fill color and fixed size
   <svg
-    fill={fill}
+    fill={fill} // Set the color of the icon
     height="16px"
     width="16px"
     version="1.1"
     id="Layer_1"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    viewBox="0 0 512.001 512.001"
+    viewBox="0 0 512.001 512.001" // Sets the view box to encapsulate the SVG
     xmlSpace="preserve"
   >
     <g>
       <g>
         <path
+        // Path for the main part of the dog SVG
           d="M507.812,266.351c-7.826-29.761-25.84-62.484-50.723-92.137c-34.58-41.212-90.895-83.651-135.714-75.773
 			c-42.431-32.481-88.327-32.471-130.744,0c-46.82-8.229-103.868,37.821-135.715,75.773c-24.883,29.654-42.897,62.376-50.723,92.137
 			c-18.413,70.02,25.903,107.886,92.341,76.86c7.012,27.192,22.558,49.464,45.976,65.449c57.111,38.982,169.794,39.036,226.986,0
@@ -33,6 +36,7 @@ const DogSvg = ({ fill }) => (
     </g>
     <g>
       <g>
+      // Circle elements for the dog's eyes
         <circle cx="198.492" cy="202.354" r="21.172" />
       </g>
     </g>
@@ -44,6 +48,7 @@ const DogSvg = ({ fill }) => (
   </svg>
 );
 
+// DogIcon component wraps the SVG in Ant
 const DogIcon = ({ fill, ...props }) => (
   <Icon component={() => <DogSvg fill={fill} />} {...props} />
 );
