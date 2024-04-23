@@ -4,20 +4,27 @@ import Modal from "react-bootstrap/Modal";
 import Col from 'react-bootstrap/Col';
 import { useState } from "react";
 
+// This component allows users to customize a pet's name through a modal dialog.
 const NameCustomizeModal = ({ show, handleClose, handleCloseSave, breed }) => {
+  // This component allows users to customize a pet's name through a modal dialog.
   const [petNameInput, setPetNameInput] = useState("");
 
   return (
     <>
+      {/* Modal component from react-bootstrap used to display an overlay or a pop-up dialog. */}
       <Modal show={show} onHide={handleClose}>
+        {/* Modal header with a close button. */}
         <Modal.Header closeButton>
           <Modal.Title>Customize a name</Modal.Title>
         </Modal.Header>
 
+        {/* Body of the modal containing a form for user input. */}
         <Modal.Body>
           <Form>
+            {/* Form group for customizing the pet's name. */}
             <Form.Group className="mb-3" controlId="customized.petName">
               <Form.Label>Name your pet</Form.Label>
+              {/* Form group for customizing the pet's name. */}
               <Col sm="10">
                 <Form.Control
                   plaintext
@@ -25,6 +32,7 @@ const NameCustomizeModal = ({ show, handleClose, handleCloseSave, breed }) => {
                   defaultValue={`Breed: ${breed}`}
                 />
               </Col>
+              {/* Text input for entering the new name of the pet. */}
               <Form.Control
                 size="lg"
                 type="text"
@@ -36,6 +44,7 @@ const NameCustomizeModal = ({ show, handleClose, handleCloseSave, breed }) => {
           </Form>
         </Modal.Body>
 
+        {/* Text input for entering the new name of the pet. */}
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
