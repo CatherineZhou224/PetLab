@@ -32,15 +32,6 @@
 }
 
 
-#root .card .card-img-top {
-  flex: 0 0 100%;
-  max-width: 100%;
-}
-
-#root .card .card-body {
-  flex: 0 0 100%;
-  max-width: 100%;
-}
 
 #root .card .card-body {
   display: flex;
@@ -146,13 +137,22 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 }
 
 .ant-tabs-tabpane{
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: 30% 70%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
   gap: 5px;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   
+}
+
+.search-breed-wrapper{
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px;
+  gap: 5%;
 }
 
 
@@ -250,8 +250,6 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 
 
 #root .ant-layout{
-  flex: 0 0 80%;
-  justify-content: center;
   align-items: stretch;
   background: transparent;
 }
@@ -662,6 +660,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   #root .card .card-img-top {
     flex: 0 0 50%;
     max-width: 50%;
+    min-width: 10%;
     height: 100%;
   }
   
