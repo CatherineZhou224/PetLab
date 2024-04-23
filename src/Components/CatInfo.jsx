@@ -4,10 +4,9 @@ import { getCatInfo } from "../utils/utils";
 import { AutoComplete, Input, List } from "antd";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { BarChart } from "@mui/x-charts/BarChart";
-
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
+import Chart from "./Chart";
 
 export function CatInfo({
   addToCatCollection,
@@ -28,7 +27,7 @@ export function CatInfo({
   const [catFamily, setCatFamily] = useState("");
   const [message, setMessage] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [show, setShow] = useState(false);
   const [customNames, setCustomNames] = useState(() => {
     const storedCustomNames = localStorage.getItem("customNames.cats");
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
@@ -39,20 +38,24 @@ export function CatInfo({
     setSearchResults(filteredBreeds);
   };
 
+  const handleCatInfo = () => {
+    setCatBreed("");
+    setCatName("");
+    setCatLength("");
+    setCatOrigin("");
+    setCatImage("");
+    setCatChildren("");
+    setCatOtherPets("");
+    setCatFamily("");
+    setMessage("No data found for the specified cat.");
+  };
+
   const handleClick = async (breed) => {
     try {
       const existingData = JSON.parse(localStorage.getItem(breed));
       if (existingData) {
         if (existingData === "empty") {
-          setCatBreed("");
-          setCatName("");
-          setCatLength("");
-          setCatOrigin("");
-          setCatImage("");
-          setCatChildren("");
-          setCatOtherPets("");
-          setCatFamily("");
-          setMessage("No data found for the specified cat.");
+          handleCatInfo();
         } else {
           setCatBreed(breed);
           const customName = customNames[breed];
@@ -82,68 +85,61 @@ export function CatInfo({
           setMessage("");
         } else {
           localStorage.setItem(breed, JSON.stringify("empty"));
-          setCatBreed("");
-          setCatName("");
-          setCatLength("");
-          setCatOrigin("");
-          setCatImage("");
-          setCatChildren("");
-          setCatOtherPets("");
-          setCatFamily("");
-          setMessage("No data found for the specified cat.");
+          handleCatInfo();
         }
       }
     } catch (error) {
-      console.error("Error fetching cat information:", error);
-      setMessage("Error fetching cat information. Please try again later.");
+      message.error(error);
     }
   };
 
+  const handleAddClick = () =>
+    addToCatCollection({
+      key: catBreed,
+      icon: catImage,
+      label: catName,
+    });
+
   useEffect(() => {
-    handleClick("Abyssinian");
+    handleClick(catBreeds[0]);
   }, []);
 
+  // Function to change the name of the pet on the card
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+  const handleCloseSave = (petNameInput, breed) => {
+    setShow(false);
+    setCatName(petNameInput);
+    setCustomNames((prev) => ({
+      ...prev,
+      [breed]: petNameInput,
+    }));
 
-   // Function to change the name of the pet on the card
-   const [show, setShow] = useState(false);
-   const handleShow = () => setShow(true);
- 
-   const handleClose = () => setShow(false);
-   const handleCloseSave = (petNameInput, breed) => {
-     setShow(false);
-     setCatName(petNameInput);
-     setCustomNames((prev) => ({
-       ...prev,
-       [breed]: petNameInput,
-     }));
- 
-     localStorage.setItem(
-       "customNames.cats",
-       JSON.stringify({
-         ...customNames,
-         [breed]: petNameInput,
-       })
-     );
-     
-     updateCollectionName(petNameInput, breed);
-     console.log("Custom cat names:", customNames);
-   };
+    localStorage.setItem(
+      "customNames.cats",
+      JSON.stringify({
+        ...customNames,
+        [breed]: petNameInput,
+      })
+    );
 
+    updateCollectionName(petNameInput, breed);
+  };
 
   return (
     <>
-    <div className="search-breed-wrapper">
-      <AutoComplete
-        style={{ width: '20vw', marginBottom: 0 }}
-        options={searchResults.map((breed) => ({ value: breed }))}
-        onSelect={handleClick}
-        onSearch={handleSearch}
-        placeholder={searchBarText}
-      >
-        <Input.Search enterButton />
-      </AutoComplete>
+      <div className="search-breed-wrapper">
+        <AutoComplete
+          style={{ width: "20vw", marginBottom: 0 }}
+          options={searchResults.map((breed) => ({ value: breed }))}
+          onSelect={handleClick}
+          onSearch={handleSearch}
+          placeholder={searchBarText}
+        >
+          <Input.Search enterButton />
+        </AutoComplete>
 
-      <div className="breed-header">{catBreed}</div>
+        <div className="breed-header">{catBreed}</div>
       </div>
 
       <div className="container">
@@ -158,49 +154,36 @@ export function CatInfo({
           )}
           style={{ overflowY: "scroll" }}
         />
-        
-          {!catImage && message && <h3 className="alert-message">{message}</h3>}
-          {catImage && !message && (
-            <Card>
-              <Card.Img
-                variant="top"
-                src={catImage}
-                alt={catBreed}
-                style={{
-                  width: "100%",
-                  objectFit: "cover",
-                }}
-              />
-              <Card.Body>
+
+        {!catImage && message && <h3 className="alert-message">{message}</h3>}
+        {catImage && !message && (
+          <Card>
+            <Card.Img
+              variant="top"
+              src={catImage}
+              alt={catBreed}
+              style={{
+                width: "100%",
+                objectFit: "cover",
+              }}
+            />
+            <Card.Body>
               <Card.Title>{catBreed && `Breed: ${catBreed}`}</Card.Title>
-                <Card.Title>
-                  {catName &&
-                    `Name: ${
-                      customNames[catBreed] || "Give your pet a name;))"
-                    }`}
-                </Card.Title>
-                <Card.Text>
-                  {catOrigin && `Origin: ${catOrigin}`}
-                  <br />
-                  {catLength && `Length: ${catLength}`}
-                </Card.Text>
-                <BarChart
-                  xAxis={[
-                    {
-                      scaleType: "band",
-                      data: ["with Children", "with Dogs", "with Strangers"],
-                      label: "Friendliness Level",
-                    },
-                  ]}
-                  series={[
-                    {
-                      data: [catChildren, catOtherPets, catFamily],
-                    },
-                  ]}
-                  width={400}
-                  height={300}
-                />
-                <div className="button-wrapper">
+              <Card.Title>
+                {catName &&
+                  `Name: ${customNames[catBreed] || "Give your pet a name;))"}`}
+              </Card.Title>
+              <Card.Text>
+                {catOrigin && `Origin: ${catOrigin}`}
+                <br />
+                {catLength && `Length: ${catLength}`}
+              </Card.Text>
+              <Chart
+                children={catChildren}
+                otherPets={catOtherPets}
+                people={catFamily}
+              />
+              <div className="button-wrapper">
                 <Button
                   onClick={handleShow}
                   variant="secondary"
@@ -216,42 +199,31 @@ export function CatInfo({
                   breed={catBreed}
                 />
 
-                <Button
-                  variant="primary"
-                  onClick={() =>
-                    addToCatCollection({
-                      key: catBreed,
-                      icon: catImage,
-                      label: catName,
-                    })
-                  }
-                >
+                <Button variant="primary" onClick={handleAddClick}>
                   Add to collection
                 </Button>
-                </div>
-              </Card.Body>
-            </Card>
-          )}
+              </div>
+            </Card.Body>
+          </Card>
+        )}
 
-          {/* image modal */}
-          {isOpen &&
-            catCollection.map((cat, index) => {
-              console.log("selectedCollectionCat", selectedCollectionCat);
-              console.log("what cat", cat);
-              if (cat.key === selectedCollectionCat.key) {
-                return (
-                  <ImageModal
-                    key={cat.key}
-                    src={cat.imageUrl}
-                    alt={cat.key}
-                    caption={cat.label}
-                    handleCloseSave={handleCloseSave}
-                    onClose={() => setIsOpen(false)}
-                    updateCollectionName={updateCollectionName}
-                  />
-                );
-              }
-            })}
+        {/* image modal */}
+        {isOpen &&
+          catCollection.map((cat) => {
+            if (cat.key === selectedCollectionCat.key) {
+              return (
+                <ImageModal
+                  key={cat.key}
+                  src={cat.imageUrl}
+                  alt={cat.key}
+                  caption={cat.label}
+                  handleCloseSave={handleCloseSave}
+                  onClose={() => setIsOpen(false)}
+                  updateCollectionName={updateCollectionName}
+                />
+              );
+            }
+          })}
       </div>
     </>
   );

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { AutoComplete, Input, List } from "antd";
+import { AutoComplete, Input, List, message } from "antd";
 import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
-import { BarChart } from "@mui/x-charts/BarChart";
+import Chart from "./Chart";
 
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
-import { display } from "@mui/system";
 
 export function DogInfo({
   addToDogCollection,
@@ -95,7 +94,6 @@ export function DogInfo({
         }
       }
     } catch (error) {
-      console.error("Error fetching dog information:", error);
       setMessage("Error fetching dog information. Please try again later.");
     }
   };
@@ -105,16 +103,20 @@ export function DogInfo({
       try {
         const data = await getDogBreeds();
         const breedNames = Object.keys(data.message);
+        console.log(breedNames[0]);
         setBreeds(breedNames);
         localStorage.setItem("breeds", JSON.stringify(breedNames));
+        // Call handleSelect with the first breed in the list
+        if (breedNames.length > 0) {
+          handleSelect(breedNames[0]);
+        }
       } catch (error) {
-        console.error("Error fetching dog breeds:", error);
+        message.error("Error fetching dog breeds:", error.message);
       }
     };
 
     try {
       const initialBreeds = localStorage.getItem("breeds");
-      console.log("Initial breeds from localStorage:", initialBreeds);
 
       if (initialBreeds) {
         setBreeds(JSON.parse(initialBreeds));
@@ -122,10 +124,8 @@ export function DogInfo({
         fetchBreeds();
       }
     } catch (error) {
-      console.error("Error parsing JSON:", error);
+      message.error("Error parsing JSON:", error.message);
     }
-
-    handleSelect("affenpinscher");
   }, []);
 
   // Function to change the name of the pet on the card
@@ -149,25 +149,23 @@ export function DogInfo({
       })
     );
     updateCollectionName(petNameInput, breed);
-    console.log("Custom dog names:", customNames);
   };
-
 
   return (
     <>
-    <div className="search-breed-wrapper">
-      <AutoComplete
-        style={{ width: '20vw', marginBottom: 0 }}
-        options={searchResults.map((breed) => ({ value: breed }))}
-        onSelect={handleSelect}
-        onSearch={handleSearch}
-        placeholder={searchBarText}
-      >
-        <Input.Search enterButton />
-      </AutoComplete>
+      <div className="search-breed-wrapper">
+        <AutoComplete
+          style={{ width: "20vw", marginBottom: 0 }}
+          options={searchResults.map((breed) => ({ value: breed }))}
+          onSelect={handleSelect}
+          onSearch={handleSearch}
+          placeholder={searchBarText}
+        >
+          <Input.Search enterButton />
+        </AutoComplete>
 
-      <div className="breed-header">{dogBreed}</div>
-    </div>
+        <div className="breed-header">{dogBreed}</div>
+      </div>
 
       <div className="container">
         <List
@@ -179,50 +177,37 @@ export function DogInfo({
               {breed.charAt(0).toUpperCase() + breed.slice(1)}
             </List.Item>
           )}
-          style={{ overflowY: "scroll"}}
+          style={{ overflowY: "scroll" }}
         />
 
-          {!dogImage && message && <h3 className="alert-message">{message}</h3>}
-          {dogImage && !message && (
-            <Card>
-              <Card.Img
-                variant="top"
-                src={dogImage}
-                alt={dogBreed}
-                style={{
-                  width: "100%",
-                  objectFit: "cover",
-                }}
+        {!dogImage && message && <h3 className="alert-message">{message}</h3>}
+        {dogImage && !message && (
+          <Card>
+            <Card.Img
+              variant="top"
+              src={dogImage}
+              alt={dogBreed}
+              style={{
+                width: "100%",
+                objectFit: "cover",
+              }}
+            />
+            <Card.Body>
+              <Card.Title>{dogBreed && `Breed: ${dogBreed}`}</Card.Title>
+              <Card.Title>
+                {dogName &&
+                  `Name: ${customNames[dogBreed] || "Give your pet a name;))"}`}
+              </Card.Title>
+              <Card.Text>
+                {dogWeight && `Weight: ${dogWeight} pounds`}
+                <br />
+                {dogHeight && `Height: ${dogHeight} inches`}
+              </Card.Text>
+              <Chart
+                children={dogChildren}
+                otherPets={dogOtherDog}
+                people={dogStranger}
               />
-              <Card.Body>
-                <Card.Title>{dogBreed && `Breed: ${dogBreed}`}</Card.Title>
-                <Card.Title>
-                  {dogName &&
-                    `Name: ${
-                      customNames[dogBreed] || "Give your pet a name;))"
-                    }`}
-                </Card.Title>
-                <Card.Text>
-                  {dogWeight && `Weight: ${dogWeight} pounds`}
-                  <br />
-                  {dogHeight && `Height: ${dogHeight} inches`}
-                </Card.Text>
-                <BarChart
-                  xAxis={[
-                    {
-                      scaleType: "band",
-                      data: ["with Children", "with Dogs", "with Strangers"],
-                      label: "Friendliness Level",
-                    },
-                  ]}
-                  series={[
-                    {
-                      data: [dogChildren, dogOtherDog, dogStranger],
-                    },
-                  ]}
-                  width={400}
-                  height={300}
-                />
               <div className="button-wrapper">
                 <Button
                   onClick={handleShow}
@@ -252,30 +237,28 @@ export function DogInfo({
                   Add to collection
                 </Button>
               </div>
-              </Card.Body>
-            </Card>
-          )}
+            </Card.Body>
+          </Card>
+        )}
 
-          {/* image modal */}
-          {isOpen &&
-            dogCollection.map((dog, index) => {
-              console.log("selectedCollectionDog", selectedCollectionDog);
-              console.log("what dog", dog);
-              if (dog.key === selectedCollectionDog.key) {
-                return (
-                  <ImageModal
-                    key={dog.key}
-                    src={dog.imageUrl}
-                    alt={dog.key}
-                    caption={dog.label}
-                    handleCloseSave={handleCloseSave}
-                    onClose={() => setIsOpen(false)}
-                    updateCollectionName={updateCollectionName}
-                  />
-                );
-              }
-            })}
-        </div>
+        {/* image modal */}
+        {isOpen &&
+          dogCollection.map((dog) => {
+            if (dog.key === selectedCollectionDog.key) {
+              return (
+                <ImageModal
+                  key={dog.key}
+                  src={dog.imageUrl}
+                  alt={dog.key}
+                  caption={dog.label}
+                  handleCloseSave={handleCloseSave}
+                  onClose={() => setIsOpen(false)}
+                  updateCollectionName={updateCollectionName}
+                />
+              );
+            }
+          })}
+      </div>
     </>
   );
 }

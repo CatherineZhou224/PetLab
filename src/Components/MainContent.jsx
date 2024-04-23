@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Layout, Menu, Button, Tabs, theme } from "antd";
+import { Layout, theme } from "antd";
 import Title from "antd/es/typography/Title";
 import "../App.css";
-import { DogInfo } from "./DogInfo";
-import { CatInfo } from "./CatInfo";
-import DogIcon from "./DogIcon";
-import CatIcon from "./CatIcon";
 import Sound from "./Sound";
+import Tab from "./Tab";
+import SideBar from "./SideBar";
 
-const { Header, Sider } = Layout;
+const { Header } = Layout;
 const MainContent = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState("1");
+  const [showPopup, setShowPopup] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const { TabPane } = Tabs;
-
-  const handleTabChange = () => {
-    setActiveTab((prev) => (prev === "1" ? "2" : "1"));
-  };
-
   //Pet Collection Manager
-  // States for dog and cat collections
+  //States for dog and cat collections
+  //if the collection exists, extract it from the local storage
+  //otherwise, set it to an empty array
   const [dogCollection, setDogCollection] = useState(() => {
     const storedDogs = localStorage.getItem("dogCollection");
     return storedDogs ? JSON.parse(storedDogs) : [];
@@ -35,7 +29,9 @@ const MainContent = () => {
     return storedCats ? JSON.parse(storedCats) : [];
   });
 
-  // Handlers for adding to collections
+  //Handlers for adding to collections
+  //if the dog/cat already exists in the collection, trigger the alert
+  //otherwise, create a new pet and add it to the collection
   const addToDogCollection = (dog) => {
     if (dogCollection.some((d) => d.key === dog.key)) {
       return alert("This dog is already in the collection.");
@@ -52,12 +48,9 @@ const MainContent = () => {
       localStorage.setItem("dogCollection", JSON.stringify(updatedCollection));
       return updatedCollection;
     });
-
-    console.log("Dog collection:", dogCollection);
   };
 
   const addToCatCollection = (cat) => {
-    //if the cat is already in the collection, do not add it again
     if (catCollection.some((c) => c.label === cat.label)) {
       return alert("This cat is already in the collection.");
     }
@@ -75,6 +68,8 @@ const MainContent = () => {
     });
   };
 
+  //Handlers for removing from collections
+  //returning updated collection according to the remaining collection
   const removeDogCollection = (dogName) => {
     setDogCollection((prev) => {
       const updatedCollection = prev.filter((dog) => dog.label !== dogName);
@@ -91,6 +86,8 @@ const MainContent = () => {
     });
   };
 
+  //Handlers for updating collections
+  //update the dog's label to the newName given by the user
   const updateCollectionName = (newName, breed) => {
     setDogCollection((prev) => {
       const updatedCollection = prev.map((dog) => {
@@ -119,197 +116,67 @@ const MainContent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCollectionPet, setSelectedCollectionPet] = useState({});
 
+  //if the current tab is not the same as the data collection image you clicked on
+  //do not open the modal and show a alert message
   const showModal = (e, pet) => {
-    //if the current tab is not the same as the data collection image you clicked on, do not open the modal and show a alert message
-    if (activeTab === "1" && !dogCollection.some((dog) => dog.key === pet.key)) {
-      return alert("Please switch to the cat tab before accessing the cat collection.");
-    } else if (activeTab === "2" && !catCollection.some((cat) => cat.key === pet.key)) {
-      return alert("Please switch to the dog tab before accessing the dog collection.");
+    if (
+      activeTab === "1" &&
+      !dogCollection.some((dog) => dog.key === pet.key)
+    ) {
+      return alert(
+        "Please switch to the cat tab before accessing the cat collection."
+      );
+    } else if (
+      activeTab === "2" &&
+      !catCollection.some((cat) => cat.key === pet.key)
+    ) {
+      return alert(
+        "Please switch to the dog tab before accessing the dog collection."
+      );
     } else {
-    e.stopPropagation();
-    console.log("Opening modal for pet:", pet);
-    setSelectedCollectionPet(pet);
-    setIsOpen(true);
-    console.log("Modal open state:", isOpen);
+      e.stopPropagation();
+      setSelectedCollectionPet(pet);
+      setIsOpen(true);
     }
   };
-
-  //hover effect
-  const [showPopup, setShowPopup] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (event) => {
-    const cursorX = event.clientX,
-      cursorY = event.clientY;
-
-    setPosition({
-      x: cursorX,
-      y: cursorY,
-    });
-  };
-
-  const handleMouseEnter = (event) => {
-    event.preventDefault();
-    setShowPopup(true);
-    console.log("showPopup", showPopup);
-    console.log("position", position);
-  };
-
-  const handleMouseLeave = () => {
-    setShowPopup(false);
-  };
-
 
   //search bar resizing
   const [searchBarText, setSearchBarText] = useState(
     window.innerWidth < 1000 ? "Search" : "Search for dog breeds"
   );
 
+  //when the page initially loads
+  //adjust the search bar text according to the opening window size
   useEffect(() => {
     const handleResize = () => {
-      // do magic for resize
-        if (window.innerWidth < 500) {
-          setSearchBarText("");
-        } else if (window.innerWidth >= 500 && window.innerWidth < 1000) {
-          setSearchBarText('Search');
-        } else if (window.innerWidth >= 1000) {
-          setSearchBarText('Search for dog breeds');
-        }
-      };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-     window.removeEventListener('resize', handleResize);
+      if (window.innerWidth < 500) {
+        setSearchBarText("");
+      } else if (window.innerWidth >= 500 && window.innerWidth < 1000) {
+        setSearchBarText("Search");
+      } else if (window.innerWidth >= 1000) {
+        setSearchBarText("Search for dog breeds");
+      }
     };
 
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
-
-
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Sider */}
-      <Sider 
-        trigger={null} 
-        collapsible 
-        collapsed={collapsed}
-      >
-        <div className="nav-btn-container">
-          <Button
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
-              style={{
-                fontSize: "16px",
-                width: 64,
-                height: 64,
-              }}
-            />
-        </div>
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["1", "2"]}
-          // dog collection item and cat collection item
-          items={[
-            {
-              key: "1",
-              icon: <DogIcon fill="white" />,
-              label: "Dog Collection",
-              children: dogCollection.map((dog, index) => ({
-                key: dog.key,
-                icon: (
-                  <span>
-                    <span
-                      className="remove-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeDogCollection(dog.label);
-                      }}
-                    >
-                      ❌
-                    </span>
-                    <img
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        showModal(e, dog);
-                        console.log("is open?", isOpen);
-                      }}
-                      className="image"
-                      src={dog.imageUrl}
-                      alt={dog.key}
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </span>
-                ),
-                label: (
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      showModal(e, dog);
-                      console.log("is open?", isOpen);
-                    }}
-                    onMouseMove={handleMouseMove}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    {dog.label}
-                  </div>
-                ),
-              })),
-            },
-            {
-              key: "2",
-              icon: <CatIcon fill="white" />,
-              label: "Cat Collection",
-              children: catCollection.map((cat, index) => ({
-                key: cat.key,
-                icon: (
-                  <span>
-                    <span
-                      className="remove-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeCatCollection(cat.label);
-                      }}
-                    >
-                      ❌
-                    </span>
-                    <img
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        showModal(e, cat);
-                        console.log("is open?", isOpen);
-                      }}
-                      className="image"
-                      src={cat.imageUrl}
-                      alt={cat.key}
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </span>
-                ),
-                label: (
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      showModal(e, cat);
-                      console.log("is open?", isOpen);
-                    }}
-                    onMouseMove={handleMouseMove}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    {cat.label}
-                  </div>
-                ),
-              })),
-            },
-          ]}
-        />
-      </Sider>
+      {/* side bar */}
+      <SideBar
+        setShowPopup={setShowPopup}
+        setPosition={setPosition}
+        dogCollection={dogCollection}
+        catCollection={catCollection}
+        removeDogCollection={removeDogCollection}
+        removeCatCollection={removeCatCollection}
+        showModal={showModal}
+      />
 
       {/* main container */}
       <Layout>
@@ -321,62 +188,28 @@ const MainContent = () => {
             background: colorBgContainer,
           }}
         >
-          <Title 
-          className="content-page-title"
-          level={2} 
-          style={{ margin: 0 }}>
+          <Title className="content-page-title" level={2} style={{ margin: 0 }}>
             Pet Lab
           </Title>
         </Header>
-        <Tabs
-          destroyInactiveTabPane="true"
-          activeKey={activeTab}
-          onChange={handleTabChange}
-        >
-          <TabPane
-            tab={
-              <>
-                <DogIcon style={{ marginRight: "0.5rem" }} />
-                Dogs
-              </>
-            }
-            key="1"
-          >
-            <DogInfo
-              activeTab={activeTab}
-              addToDogCollection={addToDogCollection}
-              removeDogCollection={removeDogCollection}
-              dogCollection={dogCollection}
-              updateCollectionName={updateCollectionName}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              selectedCollectionDog={selectedCollectionPet}
-              searchBarText={searchBarText}
-            />
-          </TabPane>
-          <TabPane
-            tab={
-              <>
-                <CatIcon style={{ marginRight: "0.5rem" }} />
-                Cats
-              </>
-            }
-            key="2"
-          >
-            <CatInfo
-              addToCatCollection={addToCatCollection}
-              removeCatCollection={removeCatCollection}
-              catCollection={catCollection}
-              updateCollectionName={updateCollectionName}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              selectedCollectionCat={selectedCollectionPet}
-              searchBarText={searchBarText}
-            />
-          </TabPane>
-        </Tabs>
+        <Tab
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          addToDogCollection={addToDogCollection}
+          removeDogCollection={removeDogCollection}
+          dogCollection={dogCollection}
+          updateCollectionName={updateCollectionName}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          selectedCollectionPet={selectedCollectionPet}
+          searchBarText={searchBarText}
+          addToCatCollection={addToCatCollection}
+          removeCatCollection={removeCatCollection}
+          catCollection={catCollection}
+        />
       </Layout>
-
+      <Sound />
+      {/* popup showing when hovering on the label*/}
       {showPopup && (
         <div
           className="popup"
@@ -389,8 +222,6 @@ const MainContent = () => {
           Click on the thubnail to view the detailed image!
         </div>
       )}
-
-      <Sound />
     </Layout>
   );
 };
