@@ -4,7 +4,6 @@ import { getDogBreeds, getDogInfo } from "../utils/utils";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Chart from "./Chart";
-
 import ImageModal from "./ImageModal";
 import NameCustomizeModal from "./NameCustomizeModal";
 
@@ -29,30 +28,38 @@ export function DogInfo({
   const [dogStranger, setDogStranger] = useState("");
   const [message, setMessage] = useState("");
 
+  // Retrieve custom names from local storage or initialize as an empty object
   const [customNames, setCustomNames] = useState(() => {
     const storedCustomNames = localStorage.getItem("customNames.dogs");
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
 
+  // Handles search functionality and updates search results based on filter
   const handleSearch = (value) => {
     const filteredBreeds = breeds.filter((breed) => breed.startsWith(value));
     setSearchResults(filteredBreeds);
   };
 
+  // Set dog attributes to empty
+  const handleDogInfo = () => {
+    setDogBreed("");
+    setDogName("");
+    setDogHeight("");
+    setDogWeight("");
+    setDogImage("");
+    setDogChildren("");
+    setDogOtherDog("");
+    setDogStranger("");
+    setMessage("No data found for the specified dog.");
+  };
+
+  // Handles selecting a dog breed, fetches its data, or uses cached data
   const handleSelect = async (breed) => {
     try {
       const existingData = JSON.parse(localStorage.getItem(breed));
       if (existingData) {
         if (existingData === "empty") {
-          setDogBreed("");
-          setDogName("");
-          setDogHeight("");
-          setDogWeight("");
-          setDogImage("");
-          setDogChildren("");
-          setDogOtherDog("");
-          setDogStranger("");
-          setMessage("No data found for the specified dog.");
+          handleDogInfo();
         } else {
           setDogBreed(breed);
           const customName = customNames[breed];
@@ -82,15 +89,7 @@ export function DogInfo({
           setMessage("");
         } else {
           localStorage.setItem(breed, JSON.stringify("empty"));
-          setDogBreed("");
-          setDogName("");
-          setDogHeight("");
-          setDogWeight("");
-          setDogImage("");
-          setDogChildren("");
-          setDogOtherDog("");
-          setDogStranger("");
-          setMessage("No data found for the specified dog:(");
+          handleDogInfo();
         }
       }
     } catch (error) {
@@ -98,28 +97,25 @@ export function DogInfo({
     }
   };
 
+  //Initially load the data when page is rendered
   useEffect(() => {
     const fetchBreeds = async () => {
       try {
         const data = await getDogBreeds();
         const breedNames = Object.keys(data.message);
-        console.log(breedNames[0]);
+        handleSelect(breedNames[0]); // Call handleSelect with the first breed in the list
         setBreeds(breedNames);
         localStorage.setItem("breeds", JSON.stringify(breedNames));
-        // Call handleSelect with the first breed in the list
-        if (breedNames.length > 0) {
-          handleSelect(breedNames[0]);
-        }
       } catch (error) {
         message.error("Error fetching dog breeds:", error.message);
       }
     };
 
     try {
-      const initialBreeds = localStorage.getItem("breeds");
-
+      const initialBreeds = JSON.parse(localStorage.getItem("breeds"));
       if (initialBreeds) {
-        setBreeds(JSON.parse(initialBreeds));
+        setBreeds(initialBreeds);
+        handleSelect(initialBreeds[0]);
       } else {
         fetchBreeds();
       }
@@ -148,6 +144,7 @@ export function DogInfo({
         [breed]: petNameInput,
       })
     );
+    // Propagate name change to parent component to update app state
     updateCollectionName(petNameInput, breed);
   };
 
@@ -226,7 +223,7 @@ export function DogInfo({
 
                 <Button
                   variant="primary"
-                  onClick={(e) => {
+                  onClick={() => {
                     addToDogCollection({
                       key: dogBreed,
                       icon: dogImage,
@@ -242,6 +239,7 @@ export function DogInfo({
         )}
 
         {/* image modal */}
+        {/* when the key matches with the selection key, open the image modal */}
         {isOpen &&
           dogCollection.map((dog) => {
             if (dog.key === selectedCollectionDog.key) {

@@ -33,11 +33,13 @@ export function CatInfo({
     return storedCustomNames ? JSON.parse(storedCustomNames) : {};
   });
 
+  // Function to handle the search input by the user.
   const handleSearch = (value) => {
     const filteredBreeds = catBreeds.filter((breed) => breed.startsWith(value));
     setSearchResults(filteredBreeds);
   };
 
+  // Set cat attributes to empty
   const handleCatInfo = () => {
     setCatBreed("");
     setCatName("");
@@ -50,6 +52,8 @@ export function CatInfo({
     setMessage("No data found for the specified cat.");
   };
 
+  // Function called when a breed is clicked
+  // It fetches or retrieves the breed info from local storage.
   const handleClick = async (breed) => {
     try {
       const existingData = JSON.parse(localStorage.getItem(breed));
@@ -93,13 +97,7 @@ export function CatInfo({
     }
   };
 
-  const handleAddClick = () =>
-    addToCatCollection({
-      key: catBreed,
-      icon: catImage,
-      label: catName,
-    });
-
+  // Initialize the first breed on component mount.
   useEffect(() => {
     handleClick(catBreeds[0]);
   }, []);
@@ -122,7 +120,7 @@ export function CatInfo({
         [breed]: petNameInput,
       })
     );
-
+    // Propagate name change to parent component to update app state
     updateCollectionName(petNameInput, breed);
   };
 
@@ -199,7 +197,16 @@ export function CatInfo({
                   breed={catBreed}
                 />
 
-                <Button variant="primary" onClick={handleAddClick}>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    addToCatCollection({
+                      key: catBreed,
+                      icon: catImage,
+                      label: catName,
+                    })
+                  }
+                >
                   Add to collection
                 </Button>
               </div>
@@ -208,6 +215,7 @@ export function CatInfo({
         )}
 
         {/* image modal */}
+        {/* when the key matches with the selection key, open the image modal */}
         {isOpen &&
           catCollection.map((cat) => {
             if (cat.key === selectedCollectionCat.key) {

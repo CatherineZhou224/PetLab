@@ -17,6 +17,8 @@ const SideBar = ({
   const [collapsed, setCollapsed] = useState(false); // State to handle sidebar collapse
 
   //hover effect
+
+  // Function to update the position state based on mouse movement.
   const handleMouseMove = (event) => {
     const cursorX = event.clientX,
       cursorY = event.clientY;
@@ -27,11 +29,13 @@ const SideBar = ({
     });
   };
 
+  // Function to show the popup when the mouse enters a hoverable element.
   const handleMouseEnter = (event) => {
     event.preventDefault();
     setShowPopup(true);
   };
 
+  // Function to hide the popup when the mouse leaves the hoverable element.
   const handleMouseLeave = () => {
     setShowPopup(false);
   };
