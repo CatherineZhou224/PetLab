@@ -174,7 +174,7 @@ export function DogInfo({
               {breed.charAt(0).toUpperCase() + breed.slice(1)}
             </List.Item>
           )}
-          style={{ overflowY: "scroll" }}
+          style={{ overflowY: "auto"}}
         />
 
         {!dogImage && message && <h3 className="alert-message">{message}</h3>}
