@@ -166,7 +166,7 @@ const MainContent = () => {
   }, []);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: "100vh", minWidth: "100vh" }}>
       {/* side bar */}
       <SideBar
         setShowPopup={setShowPopup}

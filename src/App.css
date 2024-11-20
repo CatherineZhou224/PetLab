@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-
 /* Modal Content (image) */
 .image-modal-content {
   margin: auto;
@@ -11,7 +10,7 @@
   object-fit: contain;
 }
 
-.alert-message{
+.alert-message {
   color: #386161;
   text-align: center;
   padding: 20% 10% 8% 10%;
@@ -24,15 +23,13 @@
   flex-wrap: nowrap; /* Ensure items can wrap */
   max-height: 900px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.50);
+  background: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
 }
 
-#root .card-img-top{
+#root .card-img-top {
   border-radius: 5px 0 0 5px;
 }
-
-
 
 #root .card .card-body {
   display: flex;
@@ -43,9 +40,11 @@
   text-align: center;
 }
 
-.card-body :nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4) {
+.card-body :nth-child(1),
+:nth-child(2),
+:nth-child(3),
+:nth-child(4) {
   grid-column: 1 / span 2;
-
 }
 
 .card-body button {
@@ -61,16 +60,16 @@
   margin: 5% 0 3% 0;
 }
 
-g.MuiChartsAxis-label tspan{
+g.MuiChartsAxis-label tspan {
   font-size: 1.5em;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
   fill: #386161;
- }
+}
 
- .css-1xkz0he-MuiResponsiveChart-container>svg{
+.css-1xkz0he-MuiResponsiveChart-container > svg {
   height: 90%;
- }
+}
 
 .ant-tabs-content-holder {
   margin: 0;
@@ -84,7 +83,6 @@ g.MuiChartsAxis-label tspan{
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   overflow: auto;
 }
-
 
 .ant-tabs {
   height: 90%;
@@ -100,55 +98,64 @@ g.MuiChartsAxis-label tspan{
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-.ant-tabs-nav-wrap{
+.ant-tabs-nav-wrap {
   height: 6vh;
   min-height: 40px;
 }
 
-#root .ant-select{
-  width: 80% ;
+#root .ant-select {
+  width: 80%;
   margin-left: 15px;
 }
 
 .ant-btn-primary {
   border-radius: 0px 5px 5px 0px;
-  background: #02B3AF;
+  background: #02b3af;
 }
 
- #root .btn-primary{
+#root .btn-primary {
   border-radius: 5px;
-  background: #02B3AF ;
+  background: #02b3af;
   border: 0px solid transparent;
 }
 
 #root .btn-success {
-  background: #02B3AF;
+  background: #02b3af;
 }
 
-body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-primary {
-  background: #02B3AF;
+body
+  > div.fade.modal.show
+  > div
+  > div
+  > div.modal-footer
+  > button.btn.btn-primary {
+  background: #02b3af;
   border: 0px solid transparent;
 }
 
-body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-primary:hover {
+body
+  > div.fade.modal.show
+  > div
+  > div
+  > div.modal-footer
+  > button.btn.btn-primary:hover {
   background: #267574;
 }
 
 #root button:hover {
-  background: #267574 ;
+  background: #267574;
 }
 
-.ant-tabs-tabpane{
+.ant-tabs-tabpane {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 5px;
   justify-content: center;
   align-items: center;
-  
 }
 
-.search-breed-wrapper{
+.search-breed-wrapper {
   display: flex;
   width: 100%;
   justify-content: flex-start;
@@ -157,44 +164,38 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   gap: 5%;
 }
 
-
-.breed-header{
+.breed-header {
   grid-column: 2 / -1;
 }
 
-
 .ant-tabs-nav-list {
-  width:100%;
+  width: 100%;
   justify-content: space-around;
 }
-
 
 #root .ant-tabs-tab:hover {
   color: #5ec4c4;
 }
 
-#root .ant-tabs-ink-bar{
+#root .ant-tabs-ink-bar {
   background: #56ac9f;
   height: 6px;
   width: 50% !important;
-
 }
 
-.ant-tabs-tab-btn{
+.ant-tabs-tab-btn {
   font-size: 18px;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
-  color:#386161;
+  color: #386161;
 }
 
 #root .ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: #43a092;
 }
 
-
-
 .ant-spin-container {
-  height: 100px;  
+  height: 100px;
   background-color: #f0f2f5;
 }
 
@@ -204,66 +205,66 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
 
 #root .ant-list-item {
   cursor: pointer;
-  background: #02B3AF;
+  background: #02b3af;
   color: white;
 }
 
 #root .ant-list-item:hover {
-  background: #29605F;
+  background: #29605f;
 }
 
-#root > div > div{
+#root > div > div {
   margin: 1%;
-
 }
 
-#root .ant-layout-sider{
-  flex: 0 0 15%!important;
+#root .ant-layout-sider {
+  flex: 0 0 15% !important;
   max-width: 15% !important;
-  min-width: 100px!important;
+  min-width: 100px !important;
   width: 15% !important;
   height: 96vh !important;
   margin: 1%;
 }
 
 #root .ant-layout-sider-collapsed {
-  flex: 0 0 80px!important;
+  flex: 0 0 80px !important;
   max-width: 80px !important;
   min-width: 80px !important;
   width: 80px !important;
 }
 
-
-#root .ant-btn-icon-only{
-  background: #25605F;
+#root .ant-btn-icon-only {
+  background: #25605f;
   color: white;
 }
 
-.nav-btn-container{
-  background: #25605F;
+.nav-btn-container {
+  background: #25605f;
   text-align: end;
   border-radius: 10px 10px 0 0;
 }
 
 #root button:hover {
-  border-color: #70FFEE;
+  border-color: #70ffee;
 }
 
-
-#root .ant-layout{
+#root .ant-layout {
   align-items: stretch;
   background: transparent;
+  width: 100%;
 }
 
 /* sider color */
 
 /* sider item */
-#root .ant-menu-dark.ant-menu-inline .ant-menu-sub.ant-menu-inline, #root .ant-menu-dark>.ant-menu.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+#root .ant-menu-dark.ant-menu-inline .ant-menu-sub.ant-menu-inline,
+#root .ant-menu-dark > .ant-menu.ant-menu-inline .ant-menu-sub.ant-menu-inline {
   background-color: #3e7a79;
 }
 
 /* sider subtitle */
-#root .ant-menu-dark, #root .ant-menu-dark>.ant-menu {
+#root .ant-menu-dark,
+#root .ant-menu-dark > .ant-menu {
   background-color: #179e9b;
   font-size: 1.1em;
 }
@@ -284,7 +285,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   flex-direction: column;
 }
 
-.container>div:nth-child(1) {
+.container > div:nth-child(1) {
   flex: 0 0 95%;
   max-width: 95%;
   min-width: 95%;
@@ -292,7 +293,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   margin: 5px;
 }
 
-.container>div:nth-child(2) {
+.container > div:nth-child(2) {
   flex: 0 0 90%;
   max-width: 100%;
   min-width: 90%;
@@ -361,11 +362,11 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   margin-left: 10%;
 }
 
-.audio-button{
+.audio-button {
   filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.15));
 }
 
-.audio-wrapper{
+.audio-wrapper {
   position: fixed;
   top: 10px;
   left: 20%;
@@ -444,8 +445,6 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   opacity: 0;
 }
 
-
-
 #root .ant-menu ul {
   width: 100%;
   justify-content: space-around;
@@ -468,9 +467,8 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
 /* content */
-#root .content-page-title{
+#root .content-page-title {
   position: relative;
   left: 0%;
   color: white;
@@ -480,7 +478,7 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   font-weight: bold;
 }
 
-#root .content-page-title::before{
+#root .content-page-title::before {
   content: "";
   display: block;
   background: url("./assets/paw-no-shadow.png") no-repeat center center;
@@ -493,20 +491,19 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   transform: rotate(29.049deg);
 }
 
-#root .ant-layout-header{
+#root .ant-layout-header {
   text-align: center;
   justify-content: center;
   margin-bottom: 10px;
   border-radius: 10px 10px 0px 0px;
   background-color: transparent !important;
-  width:80vw;
+  width: 80vw;
 }
-
 
 .popup {
   z-index: 100;
-  background-color:  #c56c6c;
-  color:white;
+  background-color: #c56c6c;
+  color: white;
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -518,30 +515,26 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   font-weight: bold;
   color: #386161;
   text-transform: capitalize;
-  align-self:left;
+  align-self: left;
 }
-
 
 .card:hover {
   box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.2);
   transition: 0.2s;
 }
 
-#root .card-title{
-  color:#386161;
+#root .card-title {
+  color: #386161;
   font-size: 20px;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-#root .card-text{
-  color:#386161;
+#root .card-text {
+  color: #386161;
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
 }
-
-
-
 
 .image {
   cursor: pointer;
@@ -621,25 +614,24 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
   cursor: pointer;
 }
 
-
 @media only screen and (min-width: 768px) {
   .image-modal-content {
     width: 80%;
   }
-  
-  .container{
+
+  .container {
     flex-direction: row;
   }
 
-  .container>div:nth-child(1) {
+  .container > div:nth-child(1) {
     flex: 0 0 15%;
     max-width: 15%;
     min-width: 15%;
     width: 15%;
     margin: 5px;
   }
-  
-  .container>div:nth-child(2) {
+
+  .container > div:nth-child(2) {
     flex: 0 0 80%;
     max-width: 80%;
     min-width: 80%;
@@ -663,25 +655,26 @@ body > div.fade.modal.show > div > div > div.modal-footer > button.btn.btn-prima
     min-width: 10%;
     height: 100%;
   }
-  
+
   #root .card .card-body {
     flex: 0 0 50%;
     max-width: 50%;
   }
 
-  #root .card-title, #root .card-text, #root h5 {
+  #root .card-title,
+  #root .card-text,
+  #root h5 {
     margin-top: 10px;
     margin-bottom: 0;
   }
 
-  .card-body .button-wrapper{
+  .card-body .button-wrapper {
     margin: 3% 0;
   }
 
-  .audio-wrapper{
+  .audio-wrapper {
     top: 10px;
     left: auto;
     right: 0;
   }
 }
-
